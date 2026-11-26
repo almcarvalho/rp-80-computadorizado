@@ -18,12 +18,6 @@ Eu tô usando 3.11.4
 https://www.python.org/downloads/windows/
 
 
-Instale Python 3.10 ou superior, incluindo o gerenciador `pip` e o Tkinter (normalmente incluído no instalador do Windows). Abra o PowerShell na pasta deste projeto e crie o ambiente virtual:
-
-```powershell
-py -m venv .venv
-```
-
 Instale as bibliotecas **uma por vez**, executando cada comando abaixo:
 
 ```powershell
