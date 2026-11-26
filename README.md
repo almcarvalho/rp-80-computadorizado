@@ -1,5 +1,7 @@
 ﻿# Redutor de ruído para rádio PX
 
+![Tela do aplicativo](assets/AppPy.png)
+
 Aplicativo Python para ouvir no computador o áudio recebido pela saída de fone de um rádio PX. Mostra a onda sonora de saída, permite selecionar entrada e saída, ajustar o volume, ativar ou desativar a redução de ruído e aplicar um filtro para a faixa da voz. O processamento é ao vivo e introduz atraso; não altera o sinal transmitido pelo rádio.
 
 ## Ligação
