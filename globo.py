@@ -1,10 +1,13 @@
 ﻿"""Globo ortográfico e consulta das divisões PX."""
 import json
 import math
+import queue
+import threading
 import unicodedata
 from pathlib import Path
 import tkinter as tk
 from tkinter import ttk
+from propagacao import buscar_contornos
 
 BASE = Path(__file__).resolve().parent
 
@@ -47,32 +50,101 @@ def rota_esferica(origem, destino):
 
 
 class Globo(ttk.Frame):
-    def __init__(self, parent):
+    def __init__(self, parent, tela_cheia=False, fonte=None):
         super().__init__(parent, style='Panel.TFrame', padding=12)
         self.angle = -55.0
         self.selected = None
         self.rotating = True
         self.route = None
         self.hit = []
+        self.fonte = fonte
+        self.drag_start = None
+        self.drag_last = None
+        self.dragged = False
+        self.propagation_enabled = tk.BooleanVar(value=False)
+        self.propagation_status = tk.StringVar(value='')
+        self.propagation_lines = []
+        self.propagation_results = queue.Queue()
+        self.propagation_loading = False
+        self.propagation_timer = None
         with (BASE / 'paises.geojson').open(encoding='utf-8') as f:
             self.features = json.load(f)['features']
         with (BASE / 'divisoes.json').open(encoding='utf-8-sig') as f:
             self.divisoes = json.load(f)
         with (BASE / 'coordenadas_divisoes.json').open(encoding='utf-8') as f:
             self.coordinates = json.load(f)
-        ttk.Label(self, text='MAPA DE COMUNICAÇÕES', style='Title.TLabel').pack(anchor='w')
-        ttk.Label(self, text='RASTREAMENTO GLOBAL  /  11M', style='Muted.TLabel').pack(anchor='w', pady=(0, 5))
+        if fonte:
+            self.angle, self.rotating, self.route = fonte.angle, fonte.rotating, fonte.route
+            if fonte.selected:
+                code = fonte.selected['properties'].get('ADM0_A3')
+                self.selected = next((feature for feature in self.features if feature['properties'].get('ADM0_A3') == code), None)
+        if not tela_cheia:
+            ttk.Label(self, text='MAPA DE COMUNICAÇÕES', style='Title.TLabel').pack(anchor='w')
+            ttk.Label(self, text='RASTREAMENTO GLOBAL  /  11M', style='Muted.TLabel').pack(anchor='w', pady=(0, 5))
+        self.result = tk.StringVar(value='Selecione um país no globo ou pesquise abaixo.')
+        if not tela_cheia:
+            ttk.Label(self, textvariable=self.result, style='Info.TLabel', wraplength=340,
+                      justify='left').pack(fill='x', pady=(4, 8))
+        footer = ttk.Frame(self, style='Panel.TFrame')
+        if not tela_cheia:
+            footer.pack(side='bottom', fill='x')
+            ttk.Checkbutton(footer, text='Propagação 11 m (MUF)', variable=self.propagation_enabled,
+                            command=self.toggle_propagation).pack(anchor='w')
+            ttk.Label(footer, textvariable=self.propagation_status, style='Muted.TLabel',
+                      wraplength=340, justify='left').pack(anchor='w')
+        self.search = ttk.Entry(footer)
+        if not tela_cheia:
+            self.search.pack(fill='x', pady=(5, 4))
+            self.search.bind('<Return>', lambda e: self.find())
+            ttk.Button(footer, text='BUSCAR PAÍS OU DIVISÃO', command=self.find).pack(fill='x')
+            ttk.Button(footer, text='RETOMAR ROTAÇÃO', command=self.resume).pack(fill='x', pady=(4, 0))
         self.canvas = tk.Canvas(self, width=360, height=320, bg='#07121e', highlightthickness=0)
         self.canvas.pack(fill='both', expand=True)
-        self.canvas.bind('<Button-1>', self.click)
-        self.search = ttk.Entry(self)
-        self.search.pack(fill='x', pady=(5, 4))
-        self.search.bind('<Return>', lambda e: self.find())
-        ttk.Button(self, text='BUSCAR PAÍS OU DIVISÃO', command=self.find).pack(fill='x')
-        ttk.Button(self, text='RETOMAR ROTAÇÃO', command=self.resume).pack(fill='x', pady=(4, 0))
-        self.result = tk.StringVar(value='Selecione um país no globo ou pesquise acima.')
-        ttk.Label(self, textvariable=self.result, style='Info.TLabel', wraplength=340, justify='left').pack(fill='x', pady=(9, 5))
+        self.canvas.bind('<ButtonPress-1>', self.start_drag)
+        self.canvas.bind('<B1-Motion>', self.move_drag)
+        self.canvas.bind('<ButtonRelease-1>', self.end_drag)
         self.draw()
+        self.after(200, self.poll_propagation)
+
+    def toggle_propagation(self):
+        if self.propagation_timer:
+            self.after_cancel(self.propagation_timer)
+            self.propagation_timer = None
+        if self.propagation_enabled.get():
+            self.update_propagation()
+        else:
+            self.propagation_status.set('')
+
+    def update_propagation(self):
+        self.propagation_timer = None
+        if not self.propagation_enabled.get() or self.propagation_loading:
+            return
+        self.propagation_loading = True
+        self.propagation_status.set('Consultando KC2G / GIRO...')
+        def worker():
+            try:
+                self.propagation_results.put((True, buscar_contornos()))
+            except Exception as exc:
+                self.propagation_results.put((False, str(exc)))
+        threading.Thread(target=worker, daemon=True).start()
+
+    def poll_propagation(self):
+        try:
+            while True:
+                success, value = self.propagation_results.get_nowait()
+                self.propagation_loading = False
+                if success:
+                    self.propagation_lines, when = value
+                    time_text = when.strftime('%d/%m %H:%M %Z') if when else 'horário não informado'
+                    self.propagation_status.set(f'MUF 3000 km • {time_text}\nAzul: < 27 MHz • vermelho: ≥ 27 MHz')
+                else:
+                    self.propagation_status.set('Falha ao atualizar. Dados anteriores podem estar desatualizados.' if self.propagation_lines
+                                                else 'Dados de propagação indisponíveis. Verifique a internet.')
+                if self.propagation_enabled.get():
+                    self.propagation_timer = self.after(15 * 60 * 1000, self.update_propagation)
+        except queue.Empty:
+            pass
+        self.after(200, self.poll_propagation)
 
     def country_name(self, feature):
         p = feature['properties']
@@ -112,6 +184,21 @@ class Globo(ttk.Frame):
                 if len(visible) >= 3:
                     color = '#56e0c2' if feature is self.selected else '#257a81'
                     c.create_polygon(*[v for p in visible for v in p], fill=color, outline='#48acaa', width=1)
+        propagation_on = self.fonte.propagation_enabled.get() if self.fonte else self.propagation_enabled.get()
+        propagation_lines = self.fonte.propagation_lines if self.fonte else self.propagation_lines
+        if propagation_on:
+            for level, points in propagation_lines:
+                color = '#ff534d' if level >= 27 else '#48b6ff'
+                previous = None
+                for point in points:
+                    try:
+                        projected = self.project(float(point[0]), float(point[1]), cx, cy, radius)
+                    except (ValueError, TypeError, IndexError):
+                        previous = None
+                        continue
+                    if previous and previous[2] > 0 and projected[2] > 0:
+                        c.create_line(previous[0], previous[1], projected[0], projected[1], fill=color, width=2)
+                    previous = projected
         if self.route:
             projected = [self.project(lon, lat, cx, cy, radius) for lon, lat in self.route]
             for first, second in zip(projected, projected[1:]):
@@ -122,6 +209,9 @@ class Globo(ttk.Frame):
                     c.create_oval(x-4, y-4, x+4, y+4, fill='#fff3c3', outline='#ff9d42', width=2)
         state = '● LIVE' if self.rotating else '◆ ROTA FIXADA'
         c.create_text(12, 12, text=f'{state}   /   ORBITAL VIEW', anchor='nw', fill='#56e0c2', font=('Consolas', 9, 'bold'))
+        if self.fonte and self.selected:
+            c.create_text(12, 32, text=self.country_name(self.selected).upper(), anchor='nw',
+                          fill='#e8fff9', font=('Consolas', 12, 'bold'))
         if self.rotating:
             self.angle = (self.angle + .35 + 180) % 360 - 180
         self.after(100, self.draw)
@@ -129,6 +219,27 @@ class Globo(ttk.Frame):
     def resume(self):
         self.route = None
         self.rotating = True
+
+    def start_drag(self, event):
+        self.drag_start = (event.x, event.y)
+        self.drag_last = event.x
+        self.dragged = False
+
+    def move_drag(self, event):
+        if self.drag_start is None:
+            return
+        if abs(event.x - self.drag_start[0]) > 3 or abs(event.y - self.drag_start[1]) > 3:
+            self.dragged = True
+        if self.dragged:
+            width = max(self.canvas.winfo_width(), 1)
+            self.angle = (self.angle - (event.x - self.drag_last) * 180 / width + 180) % 360 - 180
+            self.rotating = False
+        self.drag_last = event.x
+
+    def end_drag(self, event):
+        if self.drag_start is not None and not self.dragged:
+            self.click(event)
+        self.drag_start = self.drag_last = None
 
     def click(self, event):
         w, h = max(self.canvas.winfo_width(), 360), max(self.canvas.winfo_height(), 320)
@@ -178,7 +289,7 @@ class Globo(ttk.Frame):
                 route_text = '\nROTA  /  BRASIL → DESTINO (APROXIMADA)'
             else:
                 route_text = '\nSEM COORDENADAS DISPONÍVEIS PARA A ROTA'
-            self.result.set(f"{entry['pais'].upper()}\nDIVISÃO  /  {entry['divisao']}{status}{route_text}")
+            self.result.set(f"PAÍS / TERRITÓRIO  /  {entry['pais'].upper()}\nDIVISÃO  /  {entry['divisao']}{status}{route_text}")
             return
         for feature in self.features:
             p = feature['properties']

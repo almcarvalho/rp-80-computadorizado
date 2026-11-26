@@ -8,13 +8,20 @@ from pathlib import Path
 import numpy as np
 from scipy.signal import resample_poly
 
-MODEL_PATH = Path(__file__).resolve().parent / 'vosk-model-small-pt-0.3'
+BASE = Path(__file__).resolve().parent
+MODELOS = {
+    'Português': BASE / 'vosk-model-small-pt-0.3',
+    'Inglês': BASE / 'vosk-model-small-en-us-0.15',
+    'Espanhol': BASE / 'vosk-model-small-es-0.42',
+}
 LOG_PATH = Path(__file__).resolve().parent / 'conversas.jsonl'
 
 
 class Transcricao:
-    def __init__(self, emit):
+    def __init__(self, emit, idioma='Português'):
         self.emit = emit
+        self.idioma = idioma
+        self.model_path = MODELOS[idioma]
         self.blocks = queue.Queue(maxsize=100)
         self.finished = threading.Event()
         self.thread = threading.Thread(target=self.run, daemon=True)
@@ -35,7 +42,7 @@ class Transcricao:
             from vosk import Model, KaldiRecognizer
             # O Vosk no Windows pode falhar com caracteres acentuados no caminho absoluto.
             # app.py define o diretório atual como a pasta do aplicativo na inicialização.
-            model = Model(MODEL_PATH.name)
+            model = Model(self.model_path.name)
             recognizer = KaldiRecognizer(model, 16000)
             self.emit('transcription_status', 'Legendas prontas. Aguardando fala na entrada selecionada...')
             while not self.finished.is_set() or not self.blocks.empty():
@@ -58,7 +65,7 @@ class Transcricao:
     def save(self, text):
         if not text.strip():
             return
-        entry = {'horario': datetime.now().isoformat(timespec='seconds'), 'texto': text.strip()}
+        entry = {'horario': datetime.now().isoformat(timespec='seconds'), 'texto': text.strip(), 'idioma': self.idioma}
         with LOG_PATH.open('a', encoding='utf-8') as log:
             log.write(json.dumps(entry, ensure_ascii=False) + '\n')
         self.emit('transcript', entry)

@@ -2,6 +2,8 @@
 .venv/
 venv/
 env/
+.env
+.env.*
 
 # Arquivos gerados pelo Python
 __pycache__/
@@ -11,9 +13,12 @@ __pycache__/
 
 # Modelo de reconhecimento baixado separadamente
 vosk-model-small-pt-0.3/
+vosk-model-small-en-us-0.15/
+vosk-model-small-es-0.42/
 
 # Transcrições locais
 conversas.jsonl
+buscas_contatos.jsonl
 
 # Arquivos locais de sistema e editor
 .DS_Store

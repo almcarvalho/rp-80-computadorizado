@@ -1,0 +1,2402 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "World Radio League API",
+    "version": "1.1.0",
+    "summary": "Read and write amateur radio contacts in a World Radio League logbook.",
+    "description": "Log contacts into World Radio League from your own software, and read them back.\n\n## Getting a key\n\nSign in to World Radio League, open **Integrations → Developer API**, and choose\n**Generate API key**. The key is shown once and stored hashed, so it cannot be\nrecovered afterwards. One key covers your whole account — it is not per logbook.\n\n## Authenticating\n\nSend the key as `Authorization: Bearer wrl_live_...`, or as `X-API-Key`. Both work.\nIf you send both they must match.\n\n**Keep the key server-side.** These endpoints deliberately send no CORS headers, so a\nbrowser cannot call them directly — an API key in a front-end bundle is a leaked key.\n\n## Responses\n\nEvery response, success or failure, is `{ \"data\": ..., \"meta\": ..., \"error\": ... }`,\nso one unwrapper handles everything. Error `code` values are stable and safe to branch\non; `message` text is not. Every response carries `X-Request-Id` — quote it in support\nrequests.\n\n## Rate limits\n\n60 writes and 120 reads per minute; 5,000 writes and 20,000 reads per day.\n\n**Reads and writes have separate budgets.** Reading does not consume write quota, and\na write does not consume read quota. `GET`, `HEAD` and unmatched paths count as reads;\n`POST`, `PATCH` and `DELETE` count as writes.\n\nEvery response issued after your quota was charged carries `X-RateLimit-Limit`,\n`X-RateLimit-Remaining` and `X-RateLimit-Reset` — errors included, because a rejected\nrequest that reached validation has already been charged. The values always describe\nthe budget for the kind of request you just made, so `Remaining` on a `POST` response\nis your remaining writes, not your remaining reads. Track the two separately.\n\nA `429` carries `Retry-After` in seconds, computed from whichever window actually\nblocked you — honour it rather than retrying on a fixed timer.\n\n## One contact per request\n\n`POST /v1/contacts` takes exactly one contact. To upload many at once, send an ADIF\nfile with the Imports endpoints below.\n\n## Bulk import (ADIF)\n\nUpload a whole log as an ADIF file of up to 10 MB in three steps — start, upload, poll:\n\n1. **Start:** `POST /v1/imports` with `{ \"programId\": \"YourApp\" }` (and optionally\n   `logbookId`). The response carries `id` and `upload.url`.\n2. **Upload:** `PUT` the raw `.adi` file to `upload.url`. This goes straight to file\n   storage, so it needs no API key and works over a slow connection. The URL is valid for\n   two hours.\n3. **Poll:** `GET /v1/imports/{id}` every few seconds. Nothing else is needed: World Radio\n   League notices the upload, checks it and queues it on its own.\n\n`status` goes `awaiting_upload` → `uploaded` → `queued` → `processing` → `complete`. The\nfile is imported exactly as an import started in World Radio League would be —\nduplicates are skipped, contacts are enriched and confirmed — usually within a few\nminutes. A file that cannot be imported ends as `rejected`, with an `errorCode` saying\nwhy. The import also appears in the operator's Activity Log, and its QSOs carry your\n`programId`.\n\nImports run one at a time per account. The records in a file count against the account's\ndaily import budget (`limits.importContactsPerDay` in `GET /v1/me`), separate from the\nwrite budget above, and an account may start `limits.importStartsPerDay` imports a day.\nYour membership's own import allowance — the same as for imports in World Radio League —\napplies on top: reaching it ends the import as `failed` with `QUOTA_EXCEEDED`.\n\n## Enrichment\n\nEnrichment is the process by which World Radio League derives missing information from\nthe data you provide. We prioritize the data you send us, but in the case that certain data such as DXCC ID is missing, we will attempt to derive it.\n\nIt happens a moment after the contact is stored, not during the request. A newly created\ncontact therefore comes back with `enrichment: \"pending\"`; re-read it a few seconds\nlater and `dxcc` and `distance` will be filled in.\n\nAnything you supply yourself is never overwritten — if you already know the grid square\nor the operator's name, send it and it is kept as-is.",
+    "contact": {
+      "name": "World Radio League",
+      "url": "https://worldradioleague.com/developer"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.worldradioleague.com",
+      "description": "API base URL for this environment"
+    }
+  ],
+  "security": [
+    {
+      "BearerApiKey": []
+    },
+    {
+      "HeaderApiKey": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Account",
+      "description": "Who the key belongs to, and what it may do."
+    },
+    {
+      "name": "Contacts",
+      "description": "QSOs — the primary resource."
+    },
+    {
+      "name": "Imports",
+      "description": "Upload a whole ADIF log at once. Processed by the same import as the app."
+    },
+    {
+      "name": "Logbooks",
+      "description": "Containers for contacts. Each contact belongs to one."
+    }
+  ],
+  "paths": {
+    "/v1/me": {
+      "get": {
+        "tags": [
+          "Account"
+        ],
+        "operationId": "getMe",
+        "summary": "Identity and quota for the current key",
+        "description": "Confirms a key works and reports what it may do, without writing anything. The first call worth making after generating a key.",
+        "responses": {
+          "200": {
+            "description": "Key details.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Envelope"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/Me"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/v1/contacts": {
+      "get": {
+        "tags": [
+          "Contacts"
+        ],
+        "operationId": "listContacts",
+        "summary": "List your contacts",
+        "description": "Newest first. Combine filters freely.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Limit"
+          },
+          {
+            "$ref": "#/components/parameters/Cursor"
+          },
+          {
+            "name": "logbookId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "Only contacts in this logbook."
+          },
+          {
+            "name": "call",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Exact match on the station worked. Case-insensitive.",
+            "example": "W1AW"
+          },
+          {
+            "name": "mode",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Exact match. Case-insensitive.",
+            "example": "FT8"
+          },
+          {
+            "name": "band",
+            "in": "query",
+            "schema": {
+              "type": "number"
+            },
+            "description": "Band in metres, e.g. 20 for 20m, 0.7 for 70cm.",
+            "example": 20
+          },
+          {
+            "name": "since",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "description": "Contacts at or after this UTC time."
+          },
+          {
+            "name": "until",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "description": "Contacts at or before this UTC time."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A page of contacts.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Envelope"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/Contact"
+                          }
+                        },
+                        "meta": {
+                          "$ref": "#/components/schemas/PageMeta"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "422": {
+            "$ref": "#/components/responses/ValidationError"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Contacts"
+        ],
+        "operationId": "createContact",
+        "summary": "Log one contact",
+        "description": "Logs a single QSO. The required fields are `programId`, `call`, `timestamp`, `freq`, `band` and `mode`.\n\n`logbookId` is optional — omit it and the contact goes to your default logbook, so a new integration needs no setup call. Sending it is recommended once you know which logbook you want.\n\nYour own callsign is worked out for you if you do not send `stationCallsign` — first\nthe logbook's default, then the callsign on your profile. It matters: it is what\nduplicate detection and contact confirmation match on.\n\nSending an array is rejected. Use `POST /v1/imports` for bulk uploads.\n\n**A QSO you have already logged is refused**, so sending the same contact twice — a\nretry after a timeout, or re-syncing your log — never stores it twice. It counts as\nalready logged when your account holds a contact with the same `call`, the same\nstation callsign, the same band and a matching mode within 15 minutes of `timestamp`.\nSSB, USB and LSB match each other, and a submode matches its parent mode (`FT4` matches\n`MFSK`), but two different submodes do not (`FT4` and `JS8`). A contest logbook is checked\non its own; any other logbook is checked against all of yours. The answer is `409\nDUPLICATE_CONTACT` with the stored contact's id in `error.existingContactId`: treat it\nas logged. `POST /v1/imports` skips duplicates in a file by the same rule, except that\nit compares the mode text exactly (SSB and USB do not match there).\n\nIf `band` disagrees with `freq`, the band the frequency implies is the one stored and\nmatched — so changing only `band` does not make it a different QSO.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContactCreate"
+              },
+              "examples": {
+                "minimal": {
+                  "summary": "The six required fields",
+                  "value": {
+                    "programId": "Ham2k",
+                    "call": "W1AW",
+                    "timestamp": "2026-08-05T14:35:00Z",
+                    "freq": 14.074,
+                    "band": "20m",
+                    "mode": "FT8"
+                  }
+                },
+                "full": {
+                  "summary": "With signal reports and details you already know",
+                  "value": {
+                    "programId": "Ham2k",
+                    "call": "W1AW",
+                    "timestamp": "2026-08-05T14:35:00Z",
+                    "freq": 14.074,
+                    "band": "20m",
+                    "mode": "FT8",
+                    "rstSent": "-12",
+                    "rstRcvd": "-08",
+                    "txPwr": "100",
+                    "stationCallsign": "K1ABC",
+                    "name": "ARRL HQ",
+                    "gridsquare": "FN31pr",
+                    "notes": "First FT8 contact of the day"
+                  }
+                },
+                "activation": {
+                  "summary": "A park-to-park contact, with a two-fer on your side",
+                  "value": {
+                    "programId": "Ham2k",
+                    "call": "W1AW",
+                    "timestamp": "2026-08-05T14:35:00Z",
+                    "freq": 14.074,
+                    "band": "20m",
+                    "mode": "FT8",
+                    "myActivities": [
+                      {
+                        "type": "POTA",
+                        "ref": "US-0662",
+                        "isPrimary": true
+                      },
+                      {
+                        "type": "WWFF",
+                        "ref": "KFF-0123"
+                      }
+                    ],
+                    "theirActivities": [
+                      {
+                        "type": "SOTA",
+                        "ref": "W7A/MN-001"
+                      }
+                    ]
+                  }
+                },
+                "adifTimestamp": {
+                  "summary": "ADIF-style date and time",
+                  "value": {
+                    "programId": "Ham2k",
+                    "call": "W1AW",
+                    "timestamp": {
+                      "qsoDate": "20260805",
+                      "timeOn": "1435"
+                    },
+                    "freq": 14.074,
+                    "band": "20m",
+                    "mode": "FT8"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Logged. Enrichment fields are still empty — re-read the contact in a few seconds.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Envelope"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/CreatedContact"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The body was not valid JSON, or contained unknown fields.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                },
+                "example": {
+                  "data": null,
+                  "meta": null,
+                  "error": {
+                    "code": "VALIDATION_ERROR",
+                    "message": "Unrecognised field \"grid_square\".",
+                    "field": "grid_square"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "description": "No such logbook, or it is not yours.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                },
+                "example": {
+                  "data": null,
+                  "meta": null,
+                  "error": {
+                    "code": "NOT_FOUND",
+                    "message": "No such logbook.",
+                    "field": "logbookId"
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The QSO is already logged (`DUPLICATE_CONTACT`; nothing was created and `existingContactId` is the stored contact), or the logbook is locked (`CONFLICT`). Branch on `code`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                },
+                "example": {
+                  "data": null,
+                  "meta": null,
+                  "error": {
+                    "code": "DUPLICATE_CONTACT",
+                    "message": "This QSO is already in the operator's log.",
+                    "existingContactId": "3f2b8c1e-5d4a-4f6b-9a7c-2e1d0b9a8c7f",
+                    "hint": "A contact with the same call, station callsign, band and mode within 15 minutes is already stored, so nothing was created. Treat it as already logged; to change it, PATCH /v1/contacts/3f2b8c1e-5d4a-4f6b-9a7c-2e1d0b9a8c7f."
+                  }
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "An array was sent, or the body was too large.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                },
+                "example": {
+                  "data": null,
+                  "meta": null,
+                  "error": {
+                    "code": "BATCH_TOO_LARGE",
+                    "message": "This endpoint accepts a single contact per request.",
+                    "hint": "To upload many contacts at once, send an ADIF file with POST /v1/imports."
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "A field was invalid, or `logbookId` was omitted and no destination could be resolved. Branch on `code`: `VALIDATION_ERROR` means fix the payload, `LOGBOOK_REQUIRED` means the account needs a default logbook chosen.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                },
+                "example": {
+                  "data": null,
+                  "meta": null,
+                  "error": {
+                    "code": "LOGBOOK_REQUIRED",
+                    "message": "This account has several logbooks and no default, so the destination is ambiguous.",
+                    "field": "logbookId",
+                    "hint": "Send `logbookId` explicitly, or choose a default logbook under Integrations → Developer API in World Radio League."
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/v1/contacts/{id}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/Id"
+        }
+      ],
+      "get": {
+        "tags": [
+          "Contacts"
+        ],
+        "operationId": "getContact",
+        "summary": "Fetch one contact",
+        "description": "Use this after creating a contact to pick up the enriched fields (`dxcc` and `distance`), which World Radio League derives from the callsign shortly after the contact is stored.",
+        "responses": {
+          "200": {
+            "description": "The contact.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Envelope"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/Contact"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Contacts"
+        ],
+        "operationId": "updateContact",
+        "summary": "Correct a contact",
+        "description": "Only the fields you send are changed.\n\nA contact cannot be moved to a different logbook — `logbookId` is rejected. Moving\none would change contest scoring and duplicate handling in ways that cannot be\nrecalculated safely. Delete it and create it in the target logbook instead.\n\nChanging the time, either callsign, the band or the mode re-runs contact\nconfirmation against other operators' logs.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContactUpdate"
+              },
+              "examples": {
+                "fields": {
+                  "summary": "Correct a signal report",
+                  "value": {
+                    "rstRcvd": "-05",
+                    "notes": "Corrected report"
+                  }
+                },
+                "activities": {
+                  "summary": "Replace your side's activities, leaving theirs untouched",
+                  "value": {
+                    "myActivities": [
+                      {
+                        "type": "POTA",
+                        "ref": "US-0662"
+                      },
+                      {
+                        "type": "POTA",
+                        "ref": "US-4567",
+                        "isPrimary": true
+                      }
+                    ]
+                  }
+                },
+                "clearActivities": {
+                  "summary": "Clear your side only",
+                  "value": {
+                    "myActivities": []
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Envelope"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/Contact"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "description": "Invalid value, or an attempt to move logbooks.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                },
+                "example": {
+                  "data": null,
+                  "meta": null,
+                  "error": {
+                    "code": "FIELD_NOT_UPDATABLE",
+                    "message": "A contact cannot be moved between logbooks. Delete it and create it in the target logbook.",
+                    "field": "logbookId"
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Contacts"
+        ],
+        "operationId": "deleteContact",
+        "summary": "Delete a contact",
+        "responses": {
+          "200": {
+            "description": "Deleted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Envelope"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/DeleteResult"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/v1/imports": {
+      "post": {
+        "tags": [
+          "Imports"
+        ],
+        "operationId": "createImport",
+        "summary": "Start an ADIF import",
+        "description": "Step 1 of 3 (start → upload → poll). Reserves an import and returns `upload.url`. `PUT` the raw ADIF file there — up to 10 MB, within two hours — then poll `GET /v1/imports/{id}`. There is no call to make after the upload: it is noticed, checked and queued for you.\n\nThe upload goes straight to file storage rather than through this API: send no API key with it, just the file as the body (`Content-Type: text/plain`). If a `PUT` fails part-way, send it again. Once the import is `queued`, further uploads to the same URL are ignored — the checked file is the one imported.\n\n`logbookId` follows the same rules as on `POST /v1/contacts`: omit it to use your default logbook. `programId` is required and is stored on every imported QSO in place of any `PROGRAMID` in the file header.\n\nOne import runs at a time per account, including imports started in World Radio League; a second one is refused with `409`. Repeating the SAME request (same logbook and `programId`) while its reservation still waits returns that reservation again with a fresh `upload.url` and status `200` — so a lost response never locks you out.\n\n`429` means not now, with `Retry-After`: many imports from your membership tier are already waiting (retry in about a minute), or this account has started `limits.importStartsPerDay` imports today (resets at 00:00 UTC).",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ImportCreate"
+              },
+              "examples": {
+                "defaultLogbook": {
+                  "summary": "Into the default logbook",
+                  "value": {
+                    "programId": "Ham2k"
+                  }
+                },
+                "namedLogbook": {
+                  "summary": "Into a specific logbook",
+                  "value": {
+                    "programId": "N1MM Logger+",
+                    "logbookId": "8d2f4b1a-3c5e-4f60-9a7b-1c2d3e4f5a6b"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The same request was already waiting for its file: that reservation, with a fresh `upload.url`. `meta.reused` is true.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Envelope"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/CreatedImport"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Reserved. Upload the file to `upload.url`, then poll the import.",
+            "headers": {
+              "Location": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "The import, e.g. `/v1/imports/{id}`."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Envelope"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/CreatedImport"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "description": "No such logbook, or it is not yours.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                },
+                "example": {
+                  "data": null,
+                  "meta": null,
+                  "error": {
+                    "code": "NOT_FOUND",
+                    "message": "No such logbook.",
+                    "field": "logbookId"
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Another import is running, or a different import is waiting for its file, or the logbook is locked.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                },
+                "example": {
+                  "data": null,
+                  "meta": null,
+                  "error": {
+                    "code": "CONFLICT",
+                    "message": "An ADIF import is already running for this account."
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "$ref": "#/components/responses/ValidationError"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/v1/imports/{id}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/Id"
+        }
+      ],
+      "get": {
+        "tags": [
+          "Imports"
+        ],
+        "operationId": "getImport",
+        "summary": "Import status and counts",
+        "description": "Step 3 of 3. Poll this after uploading — every few seconds is plenty.\n\n`status` moves `awaiting_upload` → `uploaded` (the file arrived and is being checked) → `queued` → `processing` → `complete` or `complete_with_errors`, and `counts` fill in as the file is processed. Stop polling on `complete`, `complete_with_errors`, `failed`, `rejected`, `expired` or `cancelled`.\n\n`rejected` means the file was not imported and nothing was charged; `errorCode` says why. `expired` means no file arrived within two hours.",
+        "responses": {
+          "200": {
+            "description": "The import.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Envelope"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/Import"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/v1/logbooks": {
+      "get": {
+        "tags": [
+          "Logbooks"
+        ],
+        "operationId": "listLogbooks",
+        "summary": "List your logbooks",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Limit"
+          },
+          {
+            "$ref": "#/components/parameters/Cursor"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A page of logbooks, newest first.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Envelope"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/Logbook"
+                          }
+                        },
+                        "meta": {
+                          "$ref": "#/components/schemas/PageMeta"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Logbooks"
+        ],
+        "operationId": "createLogbook",
+        "summary": "Create a logbook",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LogbookCreate"
+              },
+              "example": {
+                "name": "POTA activations",
+                "defaultCallSign": "K1ABC"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Envelope"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/Logbook"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "422": {
+            "$ref": "#/components/responses/ValidationError"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/v1/logbooks/{id}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/Id"
+        }
+      ],
+      "get": {
+        "tags": [
+          "Logbooks"
+        ],
+        "operationId": "getLogbook",
+        "summary": "Fetch one logbook",
+        "responses": {
+          "200": {
+            "description": "The logbook.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Envelope"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/Logbook"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Logbooks"
+        ],
+        "operationId": "updateLogbook",
+        "summary": "Update a logbook",
+        "description": "Only the fields you send are changed.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LogbookUpdate"
+              },
+              "example": {
+                "description": "Parks on the Air, 2026 season"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Envelope"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/Logbook"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/ValidationError"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Logbooks"
+        ],
+        "operationId": "deleteLogbook",
+        "summary": "Delete an empty logbook",
+        "description": "The logbook must contain no contacts. Deleting a logbook full of contacts would cascade into a large amount of background work, so it is not offered here — delete the contacts first, or remove the logbook inside World Radio League, which handles bulk deletion in the background.",
+        "responses": {
+          "200": {
+            "description": "Deleted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Envelope"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/DeleteResult"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "description": "The logbook still contains contacts.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                },
+                "example": {
+                  "data": null,
+                  "meta": null,
+                  "error": {
+                    "code": "LOGBOOK_NOT_EMPTY",
+                    "message": "This logbook still holds 412 contacts.",
+                    "hint": "Delete its contacts first, or remove the logbook in World Radio League."
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerApiKey": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "`Authorization: Bearer wrl_live_...`"
+      },
+      "HeaderApiKey": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-API-Key",
+        "description": "`X-API-Key: wrl_live_...` — equivalent to the bearer form."
+      }
+    },
+    "parameters": {
+      "Id": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "description": "Resource id. Unknown ids and ids belonging to another account both return 404."
+      },
+      "Limit": {
+        "name": "limit",
+        "in": "query",
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100,
+          "default": 25
+        },
+        "description": "Rows per page."
+      },
+      "Cursor": {
+        "name": "cursor",
+        "in": "query",
+        "schema": {
+          "type": "string"
+        },
+        "description": "Pass `meta.nextCursor` from the previous response verbatim to get the next page. A null `nextCursor` means you have reached the end.\n\nCursors are **opaque** — do not parse, construct or modify them. They encode both the sort timestamp and a unique tiebreaker, which is what stops contacts sharing a timestamp from being skipped at a page boundary; ADIF minute-precision times make that routine. A hand-built cursor cannot express a boundary safely and is rejected with `VALIDATION_ERROR`."
+      }
+    },
+    "schemas": {
+      "Envelope": {
+        "type": "object",
+        "required": [
+          "data",
+          "meta",
+          "error"
+        ],
+        "properties": {
+          "data": {
+            "description": "The payload, or null on failure."
+          },
+          "meta": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "description": "Pagination details and validation warnings."
+          },
+          "error": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/Error"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        }
+      },
+      "ErrorEnvelope": {
+        "type": "object",
+        "required": [
+          "data",
+          "meta",
+          "error"
+        ],
+        "properties": {
+          "data": {
+            "type": "null"
+          },
+          "meta": {
+            "type": "null"
+          },
+          "error": {
+            "$ref": "#/components/schemas/Error"
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "required": [
+          "code",
+          "message"
+        ],
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "Stable identifier. Branch on this, not on `message`.",
+            "enum": [
+              "MISSING_CREDENTIALS",
+              "INVALID_KEY",
+              "KEY_REVOKED",
+              "MEMBERSHIP_REQUIRED",
+              "INSUFFICIENT_SCOPE",
+              "IP_NOT_ALLOWED",
+              "MALFORMED_JSON",
+              "NOT_FOUND",
+              "METHOD_NOT_ALLOWED",
+              "LOGBOOK_NOT_EMPTY",
+              "CONFLICT",
+              "DUPLICATE_CONTACT",
+              "PAYLOAD_TOO_LARGE",
+              "BATCH_TOO_LARGE",
+              "VALIDATION_ERROR",
+              "RATE_LIMITED",
+              "INTERNAL_ERROR",
+              "API_DISABLED",
+              "POLICY_UNAVAILABLE"
+            ]
+          },
+          "message": {
+            "type": "string",
+            "description": "Human-readable. Wording may change."
+          },
+          "field": {
+            "type": "string",
+            "description": "The field at fault, when there is one."
+          },
+          "hint": {
+            "type": "string",
+            "description": "What to do about it."
+          },
+          "requestId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Quote this in support requests."
+          },
+          "existingContactId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "`DUPLICATE_CONTACT` only: the stored contact your request repeats."
+          }
+        }
+      },
+      "PageMeta": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "integer",
+            "description": "Rows in this response."
+          },
+          "limit": {
+            "type": "integer"
+          },
+          "nextCursor": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Opaque. Pass as `cursor` for the next page; null means no more rows. Results are ordered by timestamp descending, tiebroken by id, so paging is stable and never skips or repeats a row."
+          }
+        }
+      },
+      "Me": {
+        "type": "object",
+        "properties": {
+          "uid": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Your World Radio League user id."
+          },
+          "environment": {
+            "type": "string",
+            "enum": [
+              "live",
+              "test"
+            ]
+          },
+          "scopes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "membershipTier": {
+            "type": "string",
+            "example": "premium"
+          },
+          "email": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "email",
+            "description": "Your login email. Null only if your profile could not be read."
+          },
+          "publicEmail": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "email",
+            "description": "The email you chose to show on your public WRL profile. Null when unset, in which case your profile shows your login email."
+          },
+          "defaultLogbook": {
+            "type": "object",
+            "description": "Where a contact goes when you omit `logbookId`. Check this once at setup: a null `logbookId` means such a request will be refused with `LOGBOOK_REQUIRED`, and you can tell the operator what to fix before they try to log a QSO.",
+            "properties": {
+              "logbookId": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "uuid",
+                "description": "Null when no destination can be resolved."
+              },
+              "resolution": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "enum": [
+                  "configured",
+                  "sole",
+                  "ambiguous",
+                  "none",
+                  null
+                ],
+                "description": "`configured` — explicitly chosen. `sole` — the only usable logbook. `ambiguous` — several exist and none is chosen, so send `logbookId`. `none` — no unlocked logbook exists; create one first."
+              }
+            }
+          },
+          "limits": {
+            "type": "object",
+            "properties": {
+              "writePerMin": {
+                "type": "integer",
+                "example": 60
+              },
+              "readPerMin": {
+                "type": "integer",
+                "example": 120
+              },
+              "writePerDay": {
+                "type": "integer",
+                "example": 5000
+              },
+              "readPerDay": {
+                "type": "integer",
+                "example": 20000
+              },
+              "maxContactsPerRequest": {
+                "type": "integer",
+                "example": 1,
+                "description": "Contacts accepted per POST. Currently always 1."
+              },
+              "importContactsPerDay": {
+                "type": "integer",
+                "example": 50000,
+                "description": "ADIF records this ACCOUNT may import per UTC day through `POST /v1/imports`, across all its keys. 0 means bulk import is not available. Your membership's own import allowance, the same as for imports in World Radio League, still applies on top."
+              },
+              "importStartsPerDay": {
+                "type": "integer",
+                "example": 20,
+                "description": "Imports this account may start per UTC day, counting ones whose file is later rejected."
+              }
+            }
+          },
+          "quota": {
+            "type": "object",
+            "description": "Read budget only. GET /v1/me is itself a read, so it reports the counters it just charged; your write budget is separate and unaffected by calling this endpoint. Read the write figures from the X-RateLimit-* headers on your next write.",
+            "properties": {
+              "readRemainingThisMinute": {
+                "type": "integer"
+              },
+              "readRemainingToday": {
+                "type": "integer"
+              },
+              "resetAt": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          }
+        }
+      },
+      "Logbook": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "defaultCallSign": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "defaultFrequency": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "defaultMode": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "defaultBand": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "defaultPower": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "isLocked": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          }
+        }
+      },
+      "LogbookCreate": {
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "description": {
+            "type": "string"
+          },
+          "defaultCallSign": {
+            "type": "string",
+            "maxLength": 20,
+            "description": "Used as `myCallsign` when a contact does not supply one."
+          },
+          "defaultFrequency": {
+            "type": "string",
+            "maxLength": 20
+          },
+          "defaultMode": {
+            "type": "string",
+            "maxLength": 50
+          },
+          "defaultBand": {
+            "type": "string",
+            "maxLength": 20
+          },
+          "defaultPower": {
+            "type": "string",
+            "maxLength": 20
+          }
+        }
+      },
+      "LogbookUpdate": {
+        "type": "object",
+        "minProperties": 1,
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "description": {
+            "type": "string"
+          },
+          "defaultCallSign": {
+            "type": "string",
+            "maxLength": 20
+          },
+          "defaultFrequency": {
+            "type": "string",
+            "maxLength": 20
+          },
+          "defaultMode": {
+            "type": "string",
+            "maxLength": 50
+          },
+          "defaultBand": {
+            "type": "string",
+            "maxLength": 20
+          },
+          "defaultPower": {
+            "type": "string",
+            "maxLength": 20
+          }
+        }
+      },
+      "QsoTimestamp": {
+        "description": "When the contact happened, in UTC. An ISO-8601 string without a timezone is treated as UTC — amateur radio logs UTC by convention, so a local time would be silently wrong.\n\nADIF splits this across `QSO_DATE` and `TIME_ON` and has no combined field; one instant is friendlier for a JSON API, so `timestamp` is the one place this API deliberately leaves the ADIF vocabulary. The ADIF pair is accepted too, under ADIF's own names, for callers translating straight from an ADIF record.",
+        "oneOf": [
+          {
+            "type": "string",
+            "format": "date-time",
+            "examples": [
+              "2026-08-05T14:35:00Z"
+            ]
+          },
+          {
+            "type": "object",
+            "required": [
+              "qsoDate",
+              "timeOn"
+            ],
+            "properties": {
+              "qsoDate": {
+                "type": "string",
+                "pattern": "^\\d{8}$",
+                "examples": [
+                  "20260805"
+                ],
+                "description": "ADIF QSO_DATE — YYYYMMDD."
+              },
+              "timeOn": {
+                "type": "string",
+                "pattern": "^\\d{4}(\\d{2})?$",
+                "examples": [
+                  "1435"
+                ],
+                "description": "ADIF TIME_ON — HHMM or HHMMSS. HHMM is padded to :00 seconds."
+              }
+            }
+          }
+        ]
+      },
+      "ActivityInput": {
+        "type": "object",
+        "required": [
+          "ref"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "type": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 20,
+            "description": "Activity programme code — POTA, SOTA, IOTA, WWFF. Optional when the reference exists under only one programme.",
+            "examples": [
+              "POTA"
+            ]
+          },
+          "ref": {
+            "type": "string",
+            "maxLength": 100,
+            "description": "The location's reference, as the programme publishes it. Case is normalised.",
+            "examples": [
+              "US-0662",
+              "W7A/MN-001"
+            ]
+          },
+          "isPrimary": {
+            "type": "boolean",
+            "description": "At most one per side. Defaults to the first entry in the list."
+          }
+        }
+      },
+      "Activity": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "examples": [
+              "POTA"
+            ]
+          },
+          "ref": {
+            "type": "string",
+            "examples": [
+              "US-0662"
+            ]
+          },
+          "name": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The location's name in World Radio League.",
+            "examples": [
+              "Cape Cod National Seashore"
+            ]
+          },
+          "isPrimary": {
+            "type": "boolean"
+          }
+        }
+      },
+      "ContactCreate": {
+        "type": "object",
+        "required": [
+          "programId",
+          "call",
+          "timestamp",
+          "freq",
+          "band",
+          "mode"
+        ],
+        "additionalProperties": false,
+        "description": "Unknown fields are rejected rather than ignored, so a misspelled name never silently loses data.",
+        "properties": {
+          "programId": {
+            "type": "string",
+            "maxLength": 64,
+            "examples": [
+              "Ham2k"
+            ],
+            "description": "**Required.** The logger, converter or utility posting this contact — the equivalent of ADIF `PROGRAMID`. Send a short program name; it is recorded against the contact so the operator can see which application logged a QSO, and is not returned in responses."
+          },
+          "logbookId": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uuid",
+            "description": "Optional but recommended. Must be one of your own logbooks.\n\nOmit it (or send null) and the contact goes to your default logbook: the one chosen under Integrations → Developer API, or your only logbook if you have just one. If you have several and have chosen none, the request is refused with `LOGBOOK_REQUIRED` rather than guessed at — a contact cannot be moved between logbooks afterwards, so a wrong guess would be permanent.\n\n`meta.logbookResolution` on the response reports which rule applied, and `GET /v1/me` reports your default before you write anything."
+          },
+          "call": {
+            "type": "string",
+            "description": "The station you worked. Case is normalised. Portable and reciprocal forms are accepted: W1AW, W1AW/4, DL/W1AW, VP2E/W1AW/QRP.",
+            "examples": [
+              "W1AW"
+            ]
+          },
+          "timestamp": {
+            "$ref": "#/components/schemas/QsoTimestamp"
+          },
+          "freq": {
+            "type": "number",
+            "description": "MHz.",
+            "examples": [
+              14.074
+            ]
+          },
+          "band": {
+            "type": [
+              "string",
+              "number"
+            ],
+            "description": "Band as \"20m\", \"20\", 20 or \"70cm\". Must be a band World Radio League recognises (2200m down to 23cm); an unrecognised or malformed value is rejected. If it disagrees with the frequency, the frequency wins and a warning is returned in `meta.warnings`.",
+            "examples": [
+              "20m"
+            ]
+          },
+          "mode": {
+            "type": "string",
+            "description": "Mode or submode of the contact. World Radio League stores a single mode field, so send the submode when you want to be specific. For JS8 contacts it is preferred to send \"JS8\" — World Radio League understands that as ADIF MODE = MFSK, SUBMODE = JS8.",
+            "examples": [
+              "FT8",
+              "JS8"
+            ]
+          },
+          "rstSent": {
+            "type": "string",
+            "maxLength": 10
+          },
+          "rstRcvd": {
+            "type": "string",
+            "maxLength": 10
+          },
+          "txPwr": {
+            "type": "string",
+            "maxLength": 20,
+            "description": "Watts."
+          },
+          "notes": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "stationCallsign": {
+            "type": "string",
+            "description": "Station callsign. Defaults to the account callsign if not specified: the logbook's default callsign is used first, then the callsign on your profile."
+          },
+          "myGridsquare": {
+            "type": "string",
+            "pattern": "^[A-Ra-r]{2}(?:[0-9]{2}(?:[A-Xa-x]{2}(?:[0-9]{2})?)?)?$",
+            "description": "Your own Maidenhead locator: 2, 4, 6 or 8 characters (e.g. \"FN31\", \"FN31pr\")."
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 255,
+            "description": "The contacted station operator's name."
+          },
+          "gridsquare": {
+            "type": "string",
+            "pattern": "^[A-Ra-r]{2}(?:[0-9]{2}(?:[A-Xa-x]{2}(?:[0-9]{2})?)?)?$",
+            "description": "Maidenhead locator of the contacted station: 2, 4, 6 or 8 characters (e.g. \"FN31\", \"FN31pr\")."
+          },
+          "qth": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "state": {
+            "type": "string",
+            "maxLength": 50,
+            "description": "State/province of the contacted station. An abbreviation is preferred where possible (\"TX\" rather than \"Texas\")."
+          },
+          "operator": {
+            "type": "string",
+            "maxLength": 100,
+            "description": "Callsign of the operator who is operating the station. Defaults to the account callsign if not specified."
+          },
+          "myActivities": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "maxItems": 7,
+            "items": {
+              "$ref": "#/components/schemas/ActivityInput"
+            },
+            "description": "Activity locations you were operating FROM — the activator's side. A park, summit, island or reserve already known to World Radio League, identified by its reference (e.g. \"US-0662\"). Up to 7 per contact.\n\n`type` may be omitted when the reference exists under only one programme; where it does not (the same reference can exist as both POTA and WWFF) the request is refused with `AMBIGUOUS_ACTIVITY_REFERENCE` rather than guessed at. An IOTA reference covers a group of islands and is accepted as the group; the `name` returned is one island of it. A reference World Radio League does not know is refused with `UNKNOWN_ACTIVITY_REFERENCE` — nothing is stored, so the contact is not created with the activity silently missing.\n\n`isPrimary` marks the location a map pin and the activity breakdowns use. At most one per side; if you flag none, the first entry in the list is used."
+          },
+          "theirActivities": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "maxItems": 7,
+            "items": {
+              "$ref": "#/components/schemas/ActivityInput"
+            },
+            "description": "Activity locations the station you worked was operating from — the hunter's view of the same thing. Up to 7 per contact.\n\n`type` may be omitted when the reference exists under only one programme; where it does not (the same reference can exist as both POTA and WWFF) the request is refused with `AMBIGUOUS_ACTIVITY_REFERENCE` rather than guessed at. An IOTA reference covers a group of islands and is accepted as the group; the `name` returned is one island of it. A reference World Radio League does not know is refused with `UNKNOWN_ACTIVITY_REFERENCE` — nothing is stored, so the contact is not created with the activity silently missing.\n\n`isPrimary` marks the location a map pin and the activity breakdowns use. At most one per side; if you flag none, the first entry in the list is used."
+          }
+        }
+      },
+      "ContactUpdate": {
+        "type": "object",
+        "minProperties": 1,
+        "additionalProperties": false,
+        "description": "`logbookId` is not accepted — a contact cannot change logbook.",
+        "properties": {
+          "call": {
+            "type": "string"
+          },
+          "timestamp": {
+            "$ref": "#/components/schemas/QsoTimestamp"
+          },
+          "freq": {
+            "type": "number"
+          },
+          "band": {
+            "type": [
+              "string",
+              "number"
+            ],
+            "description": "Must be a recognised band. Sent alone (no `freq`), it is validated directly, since there is no frequency to reconcile it against."
+          },
+          "mode": {
+            "type": "string",
+            "description": "Mode or submode of the contact. World Radio League stores a single mode field, so send the submode when you want to be specific. For JS8 contacts it is preferred to send \"JS8\" — World Radio League understands that as ADIF MODE = MFSK, SUBMODE = JS8."
+          },
+          "rstSent": {
+            "type": "string",
+            "maxLength": 10
+          },
+          "rstRcvd": {
+            "type": "string",
+            "maxLength": 10
+          },
+          "txPwr": {
+            "type": "string",
+            "maxLength": 20
+          },
+          "notes": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "stationCallsign": {
+            "type": "string",
+            "description": "Station callsign. Defaults to the account callsign if not specified: the logbook's default callsign is used first, then the callsign on your profile."
+          },
+          "myGridsquare": {
+            "type": "string",
+            "pattern": "^[A-Ra-r]{2}(?:[0-9]{2}(?:[A-Xa-x]{2}(?:[0-9]{2})?)?)?$",
+            "description": "Your own Maidenhead locator: 2, 4, 6 or 8 characters (e.g. \"FN31\", \"FN31pr\")."
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 255,
+            "description": "The contacted station operator's name."
+          },
+          "gridsquare": {
+            "type": "string",
+            "pattern": "^[A-Ra-r]{2}(?:[0-9]{2}(?:[A-Xa-x]{2}(?:[0-9]{2})?)?)?$",
+            "description": "Maidenhead locator of the contacted station: 2, 4, 6 or 8 characters (e.g. \"FN31\", \"FN31pr\")."
+          },
+          "qth": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "state": {
+            "type": "string",
+            "maxLength": 50,
+            "description": "State/province of the contacted station. An abbreviation is preferred where possible (\"TX\" rather than \"Texas\")."
+          },
+          "operator": {
+            "type": "string",
+            "maxLength": 100,
+            "description": "Callsign of the operator who is operating the station. Defaults to the account callsign if not specified."
+          },
+          "myActivities": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "maxItems": 7,
+            "items": {
+              "$ref": "#/components/schemas/ActivityInput"
+            },
+            "description": "Activity locations you were operating FROM — the activator's side. A park, summit, island or reserve already known to World Radio League, identified by its reference (e.g. \"US-0662\"). Up to 7 per contact.\n\n`type` may be omitted when the reference exists under only one programme; where it does not (the same reference can exist as both POTA and WWFF) the request is refused with `AMBIGUOUS_ACTIVITY_REFERENCE` rather than guessed at. An IOTA reference covers a group of islands and is accepted as the group; the `name` returned is one island of it. A reference World Radio League does not know is refused with `UNKNOWN_ACTIVITY_REFERENCE` — nothing is stored, so the contact is not created with the activity silently missing.\n\n`isPrimary` marks the location a map pin and the activity breakdowns use. At most one per side; if you flag none, the first entry in the list is used.\n\n**A PATCH replaces this side in full.** Send the complete list you want to end up with. Omit the field to leave the side untouched, or send `[]` to clear it. The other side is never affected."
+          },
+          "theirActivities": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "maxItems": 7,
+            "items": {
+              "$ref": "#/components/schemas/ActivityInput"
+            },
+            "description": "Activity locations the station you worked was operating from — the hunter's view of the same thing. Up to 7 per contact.\n\n`type` may be omitted when the reference exists under only one programme; where it does not (the same reference can exist as both POTA and WWFF) the request is refused with `AMBIGUOUS_ACTIVITY_REFERENCE` rather than guessed at. An IOTA reference covers a group of islands and is accepted as the group; the `name` returned is one island of it. A reference World Radio League does not know is refused with `UNKNOWN_ACTIVITY_REFERENCE` — nothing is stored, so the contact is not created with the activity silently missing.\n\n`isPrimary` marks the location a map pin and the activity breakdowns use. At most one per side; if you flag none, the first entry in the list is used.\n\n**A PATCH replaces this side in full.** Send the complete list you want to end up with. Omit the field to leave the side untouched, or send `[]` to clear it. The other side is never affected."
+          }
+        }
+      },
+      "Contact": {
+        "type": "object",
+        "description": "Fields marked *enriched* are derived by World Radio League from the data you provided (see Enrichment in the overview) shortly after the contact is created. Anything you supplied yourself is never overwritten.\n\n`programId` is not listed here: it is required on create and is recorded against the contact, but it is never returned. See `ContactCreate`.",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "logbookId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "call": {
+            "type": "string",
+            "description": "The station worked."
+          },
+          "stationCallsign": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Station callsign."
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "UTC."
+          },
+          "freq": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "description": "MHz."
+          },
+          "band": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "description": "Metres, e.g. 20."
+          },
+          "mode": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Mode or submode of the contact. World Radio League stores a single mode field, so send the submode when you want to be specific. For JS8 contacts it is preferred to send \"JS8\" — World Radio League understands that as ADIF MODE = MFSK, SUBMODE = JS8."
+          },
+          "txPwr": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "rstSent": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "rstRcvd": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "ADIF RST_RCVD."
+          },
+          "notes": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "operator": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Callsign of the operator who is operating the station."
+          },
+          "name": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The contacted station operator's name."
+          },
+          "gridsquare": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Maidenhead locator of the contacted station: 2, 4, 6 or 8 characters (e.g. \"FN31\", \"FN31pr\")."
+          },
+          "qth": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "state": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "State/province of the contacted station. An abbreviation is preferred where possible (\"TX\" rather than \"Texas\")."
+          },
+          "dxcc": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "description": "*enriched* — ADIF DXCC entity code. Country, continent and flag are all derivable from this and are deliberately not duplicated here."
+          },
+          "myGridsquare": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Your own Maidenhead locator: 2, 4, 6 or 8 characters (e.g. \"FN31\", \"FN31pr\")."
+          },
+          "distance": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "description": "*enriched* — great-circle distance."
+          },
+          "isDuplicate": {
+            "type": [
+              "boolean",
+              "null"
+            ],
+            "description": "Set by World Radio League when it matches another contact in your log."
+          },
+          "myActivities": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Activity"
+            },
+            "description": "Activity locations you were operating FROM — the activator's side. A park, summit, island or reserve already known to World Radio League, identified by its reference (e.g. \"US-0662\"). Up to 7 per contact. Always present; empty when there are none. Ordered primary first."
+          },
+          "theirActivities": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Activity"
+            },
+            "description": "Activity locations the station you worked was operating from — the hunter's view of the same thing. Up to 7 per contact. Always present; empty when there are none. Ordered primary first."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          }
+        }
+      },
+      "CreatedContact": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Contact"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "enrichment": {
+                "type": "string",
+                "enum": [
+                  "pending"
+                ],
+                "description": "Always `pending` on create: `dxcc` and `distance` are derived from the callsign within a few seconds of the contact being stored. Re-read the contact to see them."
+              }
+            }
+          }
+        ]
+      },
+      "ImportCreate": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "programId"
+        ],
+        "properties": {
+          "programId": {
+            "type": "string",
+            "maxLength": 64,
+            "description": "The software sending the file, e.g. \"Ham2k\". Stored on every imported QSO in place of the file's own PROGRAMID, so the operator's log shows where they came from."
+          },
+          "logbookId": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uuid",
+            "description": "Destination logbook. Omit to use your default logbook."
+          }
+        }
+      },
+      "Import": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "awaiting_upload",
+              "uploaded",
+              "expired",
+              "rejected",
+              "queued",
+              "processing",
+              "complete",
+              "complete_with_errors",
+              "failed",
+              "cancelled"
+            ],
+            "description": "`awaiting_upload` until the file arrives (`expired` if two hours pass first), `uploaded` while it is checked, then `queued`, `processing`, and one of `complete`, `complete_with_errors`, `failed` or `cancelled`. `rejected` means the file was refused before import — see `errorCode`."
+          },
+          "logbookId": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uuid",
+            "description": "Null once the logbook has been deleted."
+          },
+          "recordCount": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "description": "Records counted in the file at completion — what was charged."
+          },
+          "progress": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "description": "Percent processed, 0–100, once the import has started."
+          },
+          "counts": {
+            "type": "object",
+            "description": "Filled in as the file is processed; null until then.",
+            "properties": {
+              "total": {
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "imported": {
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "duplicates": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "description": "Already in the account, so skipped."
+              },
+              "failed": {
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              }
+            }
+          },
+          "errorCode": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Why the import did not go through, when it did not.\n\nWith `status: rejected` (nothing imported, nothing charged): `FILE_TOO_LARGE` — over 10 MB; `NO_RECORDS` — no record ending in `<eor>`; `EXCEEDS_DAILY_LIMIT` — more records than your whole daily import budget, so split the file; `IMPORT_QUOTA_EXHAUSTED` — the account's import budget for today is used up, start again after 00:00 UTC; `KEY_REVOKED` — the API key was revoked; `LOGBOOK_DELETED` — the logbook was deleted before the file was imported; `INTERNAL` — the file could not be read after several tries.\n\nWith `status: failed`: `QUOTA_EXCEEDED` — the account's membership import allowance was reached during the import."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "queuedAt": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "finishedAt": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "expiresAt": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "description": "When the upload window closes, while the import is awaiting its file."
+          }
+        }
+      },
+      "CreatedImport": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Import"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "upload": {
+                "type": "object",
+                "properties": {
+                  "url": {
+                    "type": "string",
+                    "description": "PUT the raw ADIF file here — no API key, `Content-Type: text/plain`.",
+                    "example": "https://{storage-host}/storage/v1/object/upload/sign/private/users/…/api_….adi?token=…"
+                  },
+                  "method": {
+                    "type": "string",
+                    "enum": [
+                      "PUT"
+                    ]
+                  },
+                  "maxBytes": {
+                    "type": "integer",
+                    "example": 10485760
+                  },
+                  "expiresAt": {
+                    "type": "string",
+                    "format": "date-time"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      },
+      "DeleteResult": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "deleted": {
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          }
+        }
+      }
+    },
+    "responses": {
+      "Unauthorized": {
+        "description": "The key is missing, malformed, unknown, or revoked. `KEY_REVOKED` means generate a new one.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorEnvelope"
+            },
+            "example": {
+              "data": null,
+              "meta": null,
+              "error": {
+                "code": "INVALID_KEY",
+                "message": "The API key is not valid.",
+                "hint": "Check for truncation or extra whitespace when copying the key.",
+                "requestId": "379f8bce-f716-45d0-bbb8-c64193941183"
+              }
+            }
+          }
+        }
+      },
+      "Forbidden": {
+        "description": "Authenticated, but not permitted: the account's tier is not allowed to use the API, a missing scope, or a source address the key is not allowed to be used from.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorEnvelope"
+            },
+            "example": {
+              "data": null,
+              "meta": null,
+              "error": {
+                "code": "MEMBERSHIP_REQUIRED",
+                "message": "This account's tier is not permitted to use the API.",
+                "hint": "The key stays valid — if your tier changes, access is restored automatically."
+              }
+            }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "No such resource. Returned identically whether the id does not exist or belongs to another account.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorEnvelope"
+            },
+            "example": {
+              "data": null,
+              "meta": null,
+              "error": {
+                "code": "NOT_FOUND",
+                "message": "No such contact."
+              }
+            }
+          }
+        }
+      },
+      "ValidationError": {
+        "description": "A field failed validation.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorEnvelope"
+            },
+            "example": {
+              "data": null,
+              "meta": null,
+              "error": {
+                "code": "VALIDATION_ERROR",
+                "message": "Expected an ISO-8601 UTC timestamp (e.g. \"2026-07-30T14:35:00Z\") or ADIF form.",
+                "field": "timestamp"
+              }
+            }
+          }
+        }
+      },
+      "RateLimited": {
+        "description": "Too many requests. Honour `Retry-After` — it is computed from the window that actually blocked you, so a daily exhaustion does not tell you to retry in seconds.",
+        "headers": {
+          "Retry-After": {
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Seconds."
+          },
+          "X-RateLimit-Limit": {
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Per-minute ceiling for this request's kind — the write limit on a write, the read limit on a read."
+          },
+          "X-RateLimit-Remaining": {
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Remaining units in that same budget. Reads and writes are counted separately."
+          },
+          "X-RateLimit-Reset": {
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Unix seconds."
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorEnvelope"
+            },
+            "example": {
+              "data": null,
+              "meta": null,
+              "error": {
+                "code": "RATE_LIMITED",
+                "message": "Daily API quota exhausted.",
+                "hint": "Retry after 2026-08-06T00:00:00.000Z."
+              }
+            }
+          }
+        }
+      },
+      "InternalError": {
+        "description": "Something went wrong on our side. Quote `requestId` when reporting it.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorEnvelope"
+            },
+            "example": {
+              "data": null,
+              "meta": null,
+              "error": {
+                "code": "INTERNAL_ERROR",
+                "message": "An unexpected error occurred.",
+                "requestId": "379f8bce-f716-45d0-bbb8-c64193941183"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
