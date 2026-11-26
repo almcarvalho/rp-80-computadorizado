@@ -6,6 +6,7 @@ Aplicativo Python para ouvir no computador o áudio recebido pela saída de fone
 
 ## Ligação
 
+0. Instalar o programa vscode (extensão codex: opcional, porém interessante ter)
 1. Diminua o volume do rádio e do computador antes de conectar tudo.
 2. Conecte a **saída de fone** do rádio à **entrada de linha** do computador ou de uma interface de áudio USB, usando cabo e adaptadores adequados às conexões. Não conecte a saída de alto-falante de potência diretamente ao computador. Consulte o manual do rádio antes de conectar uma saída externa: alguns modelos usam saídas incompatíveis com o aterramento de uma placa de som; se necessário, use uma interface isolada adequada.
 3. Se houver apenas entrada de microfone, use uma interface USB com entrada de linha ou um atenuador apropriado: uma entrada de microfone pode saturar com sinal de fone. Uma saída de fone do computador não é uma entrada de áudio; conectores combinados de headset podem exigir adaptador ou interface apropriada.
