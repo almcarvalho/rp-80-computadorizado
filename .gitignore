@@ -1,0 +1,22 @@
+# Ambientes virtuais
+.venv/
+venv/
+env/
+
+# Arquivos gerados pelo Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+
+# Modelo de reconhecimento baixado separadamente
+vosk-model-small-pt-0.3/
+
+# Transcrições locais
+conversas.jsonl
+
+# Arquivos locais de sistema e editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

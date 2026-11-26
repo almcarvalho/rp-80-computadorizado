@@ -1,0 +1,2271 @@
+[
+  {
+    "divisao": "1",
+    "pais": "Itália",
+    "nome_pdf": "ITALY",
+    "situacao": "ativa",
+    "iso": "ITA"
+  },
+  {
+    "divisao": "2",
+    "pais": "Estados Unidos",
+    "nome_pdf": "USA",
+    "situacao": "ativa",
+    "iso": "USA"
+  },
+  {
+    "divisao": "3",
+    "pais": "Brasil",
+    "nome_pdf": "BRAZIL",
+    "situacao": "ativa",
+    "iso": "BRA"
+  },
+  {
+    "divisao": "4",
+    "pais": "Argentina",
+    "nome_pdf": "ARGENTINA",
+    "situacao": "ativa",
+    "iso": "ARG"
+  },
+  {
+    "divisao": "5",
+    "pais": "Venezuela",
+    "nome_pdf": "VENEZUELA",
+    "situacao": "ativa",
+    "iso": "VEN"
+  },
+  {
+    "divisao": "6",
+    "pais": "Colômbia",
+    "nome_pdf": "COLOMBIA",
+    "situacao": "ativa",
+    "iso": "COL"
+  },
+  {
+    "divisao": "7",
+    "pais": "Deleted ( Netherlands Antilles Isl )",
+    "nome_pdf": "DELETED ( NETHERLANDS ANTILLES Isl )",
+    "situacao": "excluída"
+  },
+  {
+    "divisao": "8",
+    "pais": "Peru",
+    "nome_pdf": "PERU",
+    "situacao": "ativa",
+    "iso": "PER"
+  },
+  {
+    "divisao": "9",
+    "pais": "Canadá",
+    "nome_pdf": "CANADA",
+    "situacao": "ativa",
+    "iso": "CAN"
+  },
+  {
+    "divisao": "10",
+    "pais": "México",
+    "nome_pdf": "MEXICO",
+    "situacao": "ativa",
+    "iso": "MEX"
+  },
+  {
+    "divisao": "11",
+    "pais": "Porto Rico",
+    "nome_pdf": "PUERTO RICO Isl.",
+    "situacao": "ativa",
+    "iso": "PRI"
+  },
+  {
+    "divisao": "12",
+    "pais": "Uruguai",
+    "nome_pdf": "URUGUAY",
+    "situacao": "ativa",
+    "iso": "URY"
+  },
+  {
+    "divisao": "13",
+    "pais": "Alemanha",
+    "nome_pdf": "GERMANY",
+    "situacao": "ativa",
+    "iso": "DEU"
+  },
+  {
+    "divisao": "14",
+    "pais": "França",
+    "nome_pdf": "FRANCE",
+    "situacao": "ativa",
+    "iso": "FRA"
+  },
+  {
+    "divisao": "15",
+    "pais": "Suíça",
+    "nome_pdf": "SWITZERLAND",
+    "situacao": "ativa",
+    "iso": "CHE"
+  },
+  {
+    "divisao": "16",
+    "pais": "Bélgica",
+    "nome_pdf": "BELGIUM",
+    "situacao": "ativa",
+    "iso": "BEL"
+  },
+  {
+    "divisao": "17",
+    "pais": "Hawaii",
+    "nome_pdf": "HAWAII Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "18",
+    "pais": "Grécia",
+    "nome_pdf": "GREECE",
+    "situacao": "ativa",
+    "iso": "GRC"
+  },
+  {
+    "divisao": "19",
+    "pais": "Países Baixos",
+    "nome_pdf": "NETHERLAND",
+    "situacao": "ativa",
+    "iso": "NLD"
+  },
+  {
+    "divisao": "20",
+    "pais": "Noruega",
+    "nome_pdf": "NORWAY",
+    "situacao": "ativa",
+    "iso": "NOR"
+  },
+  {
+    "divisao": "21",
+    "pais": "Suécia",
+    "nome_pdf": "SWEDEN",
+    "situacao": "ativa",
+    "iso": "SWE"
+  },
+  {
+    "divisao": "22",
+    "pais": "French Guyana",
+    "nome_pdf": "FRENCH GUYANA",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "23",
+    "pais": "Jamaica",
+    "nome_pdf": "JAMAICA Isl.",
+    "situacao": "ativa",
+    "iso": "JAM"
+  },
+  {
+    "divisao": "24",
+    "pais": "Panamá",
+    "nome_pdf": "PANAMA",
+    "situacao": "ativa",
+    "iso": "PAN"
+  },
+  {
+    "divisao": "25",
+    "pais": "Japão",
+    "nome_pdf": "JAPAN Isl.",
+    "situacao": "ativa",
+    "iso": "JPN"
+  },
+  {
+    "divisao": "26",
+    "pais": "England",
+    "nome_pdf": "ENGLAND",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "27",
+    "pais": "Islândia",
+    "nome_pdf": "ICELAND",
+    "situacao": "ativa",
+    "iso": "ISL"
+  },
+  {
+    "divisao": "28",
+    "pais": "Honduras",
+    "nome_pdf": "HONDURAS",
+    "situacao": "ativa",
+    "iso": "HND"
+  },
+  {
+    "divisao": "29",
+    "pais": "República da Irlanda",
+    "nome_pdf": "IRELAND",
+    "situacao": "ativa",
+    "iso": "IRL"
+  },
+  {
+    "divisao": "30",
+    "pais": "Espanha",
+    "nome_pdf": "SPAIN",
+    "situacao": "ativa",
+    "iso": "ESP"
+  },
+  {
+    "divisao": "31",
+    "pais": "Portugal",
+    "nome_pdf": "PORTUGAL",
+    "situacao": "ativa",
+    "iso": "PRT"
+  },
+  {
+    "divisao": "32",
+    "pais": "Chile",
+    "nome_pdf": "CHILE",
+    "situacao": "ativa",
+    "iso": "CHL"
+  },
+  {
+    "divisao": "33",
+    "pais": "Alaska",
+    "nome_pdf": "ALASKA",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "34",
+    "pais": "Canarias",
+    "nome_pdf": "CANARIAS Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "35",
+    "pais": "Áustria",
+    "nome_pdf": "AUSTRIA",
+    "situacao": "ativa",
+    "iso": "AUT"
+  },
+  {
+    "divisao": "36",
+    "pais": "San Marino",
+    "nome_pdf": "SAN MARINO",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "37",
+    "pais": "República Dominicana",
+    "nome_pdf": "DOMINICAN Rep Isl.",
+    "situacao": "ativa",
+    "iso": "DOM"
+  },
+  {
+    "divisao": "38",
+    "pais": "Groenlândia",
+    "nome_pdf": "GREENLAND",
+    "situacao": "ativa",
+    "iso": "GRL"
+  },
+  {
+    "divisao": "39",
+    "pais": "Angola",
+    "nome_pdf": "ANGOLA",
+    "situacao": "ativa",
+    "iso": "AGO"
+  },
+  {
+    "divisao": "40",
+    "pais": "Liechtenstein",
+    "nome_pdf": "LIECHTENSTEIN",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "41",
+    "pais": "Nova Zelândia",
+    "nome_pdf": "NEW ZEALAND",
+    "situacao": "ativa",
+    "iso": "NZL"
+  },
+  {
+    "divisao": "42",
+    "pais": "Libéria",
+    "nome_pdf": "LIBERIA",
+    "situacao": "ativa",
+    "iso": "LBR"
+  },
+  {
+    "divisao": "43",
+    "pais": "Austrália",
+    "nome_pdf": "AUSTRALIA",
+    "situacao": "ativa",
+    "iso": "AUS"
+  },
+  {
+    "divisao": "44",
+    "pais": "África do Sul",
+    "nome_pdf": "SOUTH AFRICA",
+    "situacao": "ativa",
+    "iso": "ZAF"
+  },
+  {
+    "divisao": "45",
+    "pais": "Sérvia",
+    "nome_pdf": "SERBIA",
+    "situacao": "ativa",
+    "iso": "SRB"
+  },
+  {
+    "divisao": "46",
+    "pais": "Deleted ( East Germany )",
+    "nome_pdf": "DELETED ( EAST GERMANY )",
+    "situacao": "excluída"
+  },
+  {
+    "divisao": "47",
+    "pais": "Dinamarca",
+    "nome_pdf": "DENMARK",
+    "situacao": "ativa",
+    "iso": "DNK"
+  },
+  {
+    "divisao": "48",
+    "pais": "Arábia Saudita",
+    "nome_pdf": "SAUDI ARABIA",
+    "situacao": "ativa",
+    "iso": "SAU"
+  },
+  {
+    "divisao": "49",
+    "pais": "Balearic",
+    "nome_pdf": "BALEARIC Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "50",
+    "pais": "Rússia",
+    "nome_pdf": "RUSSIA",
+    "situacao": "ativa",
+    "iso": "RUS"
+  },
+  {
+    "divisao": "51",
+    "pais": "Andorra",
+    "nome_pdf": "ANDORRA",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "52",
+    "pais": "Faroe",
+    "nome_pdf": "FAROE Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "53",
+    "pais": "El Salvador",
+    "nome_pdf": "EL SALVADOR",
+    "situacao": "ativa",
+    "iso": "SLV"
+  },
+  {
+    "divisao": "54",
+    "pais": "Luxemburgo",
+    "nome_pdf": "LUXEMBOURG",
+    "situacao": "ativa",
+    "iso": "LUX"
+  },
+  {
+    "divisao": "55",
+    "pais": "Gibraltar",
+    "nome_pdf": "GIBRALTAR",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "56",
+    "pais": "Finlândia",
+    "nome_pdf": "FINLAND",
+    "situacao": "ativa",
+    "iso": "FIN"
+  },
+  {
+    "divisao": "57",
+    "pais": "Índia",
+    "nome_pdf": "INDIA",
+    "situacao": "ativa",
+    "iso": "IND"
+  },
+  {
+    "divisao": "58",
+    "pais": "East Malaysia",
+    "nome_pdf": "EAST MALAYSIA",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "59",
+    "pais": "Dodecanese",
+    "nome_pdf": "DODECANESE Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "60",
+    "pais": "Hong Kong",
+    "nome_pdf": "HONG KONG",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "61",
+    "pais": "Equador",
+    "nome_pdf": "ECUADOR",
+    "situacao": "ativa",
+    "iso": "ECU"
+  },
+  {
+    "divisao": "62",
+    "pais": "Guam",
+    "nome_pdf": "GUAM Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "63",
+    "pais": "St Helena",
+    "nome_pdf": "ST HELENA Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "64",
+    "pais": "Senegal",
+    "nome_pdf": "SENEGAL",
+    "situacao": "ativa",
+    "iso": "SEN"
+  },
+  {
+    "divisao": "65",
+    "pais": "Serra Leoa",
+    "nome_pdf": "SIERRA LEONE",
+    "situacao": "ativa",
+    "iso": "SLE"
+  },
+  {
+    "divisao": "66",
+    "pais": "Mauritânia",
+    "nome_pdf": "MAURITANIA",
+    "situacao": "ativa",
+    "iso": "MRT"
+  },
+  {
+    "divisao": "67",
+    "pais": "Paraguai",
+    "nome_pdf": "PARAGUAY",
+    "situacao": "ativa",
+    "iso": "PRY"
+  },
+  {
+    "divisao": "68",
+    "pais": "North Ireland",
+    "nome_pdf": "NORTH IRELAND",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "69",
+    "pais": "Costa Rica",
+    "nome_pdf": "COSTA RICA",
+    "situacao": "ativa",
+    "iso": "CRI"
+  },
+  {
+    "divisao": "70",
+    "pais": "American Samoa",
+    "nome_pdf": "AMERICAN SAMOA Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "71",
+    "pais": "Midway",
+    "nome_pdf": "MIDWAY Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "72",
+    "pais": "Guatemala",
+    "nome_pdf": "GUATEMALA",
+    "situacao": "ativa",
+    "iso": "GTM"
+  },
+  {
+    "divisao": "73",
+    "pais": "Suriname",
+    "nome_pdf": "SURINAM",
+    "situacao": "ativa",
+    "iso": "SUR"
+  },
+  {
+    "divisao": "74",
+    "pais": "Namíbia",
+    "nome_pdf": "NAMIBIA",
+    "situacao": "ativa",
+    "iso": "NAM"
+  },
+  {
+    "divisao": "75",
+    "pais": "Azores",
+    "nome_pdf": "AZORES Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "76",
+    "pais": "Marrocos",
+    "nome_pdf": "MOROCCO",
+    "situacao": "ativa",
+    "iso": "MAR"
+  },
+  {
+    "divisao": "77",
+    "pais": "Gana",
+    "nome_pdf": "GHANA",
+    "situacao": "ativa",
+    "iso": "GHA"
+  },
+  {
+    "divisao": "78",
+    "pais": "Zâmbia",
+    "nome_pdf": "ZAMBIA",
+    "situacao": "ativa",
+    "iso": "ZMB"
+  },
+  {
+    "divisao": "79",
+    "pais": "Filipinas",
+    "nome_pdf": "PHILIPPINES",
+    "situacao": "ativa",
+    "iso": "PHL"
+  },
+  {
+    "divisao": "80",
+    "pais": "Bolívia",
+    "nome_pdf": "BOLIVIA",
+    "situacao": "ativa",
+    "iso": "BOL"
+  },
+  {
+    "divisao": "81",
+    "pais": "San Andres & Providencia",
+    "nome_pdf": "SAN ANDRES & PROVIDENCIA Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "82",
+    "pais": "Guantanamo Bay",
+    "nome_pdf": "GUANTANAMO BAY Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "83",
+    "pais": "Tanzânia",
+    "nome_pdf": "TANZANIA",
+    "situacao": "ativa",
+    "iso": "TZA"
+  },
+  {
+    "divisao": "84",
+    "pais": "Costa do Marfim",
+    "nome_pdf": "IVORY COAST",
+    "situacao": "ativa",
+    "iso": "CIV"
+  },
+  {
+    "divisao": "85",
+    "pais": "Zimbábue",
+    "nome_pdf": "ZIMBABWE",
+    "situacao": "ativa",
+    "iso": "ZWE"
+  },
+  {
+    "divisao": "86",
+    "pais": "Nepal",
+    "nome_pdf": "NEPAL",
+    "situacao": "ativa",
+    "iso": "NPL"
+  },
+  {
+    "divisao": "87",
+    "pais": "Deleted ( Yemen )",
+    "nome_pdf": "DELETED ( YEMEN )",
+    "situacao": "excluída"
+  },
+  {
+    "divisao": "88",
+    "pais": "Cuba",
+    "nome_pdf": "CUBA Isl.",
+    "situacao": "ativa",
+    "iso": "CUB"
+  },
+  {
+    "divisao": "89",
+    "pais": "Nigéria",
+    "nome_pdf": "NIGERIA",
+    "situacao": "ativa",
+    "iso": "NGA"
+  },
+  {
+    "divisao": "90",
+    "pais": "Creete",
+    "nome_pdf": "CREETE Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "91",
+    "pais": "Indonésia",
+    "nome_pdf": "INDONESIA",
+    "situacao": "ativa",
+    "iso": "IDN"
+  },
+  {
+    "divisao": "92",
+    "pais": "Líbia",
+    "nome_pdf": "LIBYA",
+    "situacao": "ativa",
+    "iso": "LBY"
+  },
+  {
+    "divisao": "93",
+    "pais": "Malta",
+    "nome_pdf": "MALTA Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "94",
+    "pais": "Emirados Árabes Unidos",
+    "nome_pdf": "U.A.E. ( UNITED ARAB EMIRATES )",
+    "situacao": "ativa",
+    "iso": "ARE"
+  },
+  {
+    "divisao": "95",
+    "pais": "Mongólia",
+    "nome_pdf": "MONGOLIA",
+    "situacao": "ativa",
+    "iso": "MNG"
+  },
+  {
+    "divisao": "96",
+    "pais": "Tonga",
+    "nome_pdf": "TONGA Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "97",
+    "pais": "Israel",
+    "nome_pdf": "ISRAEL",
+    "situacao": "ativa",
+    "iso": "ISR"
+  },
+  {
+    "divisao": "98",
+    "pais": "Singapore",
+    "nome_pdf": "SINGAPORE",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "99",
+    "pais": "Fiji",
+    "nome_pdf": "FIDJI Isl.",
+    "situacao": "ativa",
+    "iso": "FJI"
+  },
+  {
+    "divisao": "100",
+    "pais": "Coreia do Sul",
+    "nome_pdf": "SOUTH KOREA",
+    "situacao": "ativa",
+    "iso": "KOR"
+  },
+  {
+    "divisao": "101",
+    "pais": "Papua-Nova Guiné",
+    "nome_pdf": "PAPUA NEW GUINEA",
+    "situacao": "ativa",
+    "iso": "PNG"
+  },
+  {
+    "divisao": "102",
+    "pais": "Kuwait",
+    "nome_pdf": "KUWAIT",
+    "situacao": "ativa",
+    "iso": "KWT"
+  },
+  {
+    "divisao": "103",
+    "pais": "Haiti",
+    "nome_pdf": "HAITI Isl.",
+    "situacao": "ativa",
+    "iso": "HTI"
+  },
+  {
+    "divisao": "104",
+    "pais": "Corsica",
+    "nome_pdf": "CORSICA Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "105",
+    "pais": "Botsuana",
+    "nome_pdf": "BOTSWANA",
+    "situacao": "ativa",
+    "iso": "BWA"
+  },
+  {
+    "divisao": "106",
+    "pais": "Ceuta & Melilla",
+    "nome_pdf": "CEUTA & MELILLA",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "107",
+    "pais": "Monaco",
+    "nome_pdf": "MONACO",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "108",
+    "pais": "Scotland",
+    "nome_pdf": "SCOTLAND",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "109",
+    "pais": "Hungria",
+    "nome_pdf": "HUNGARY",
+    "situacao": "ativa",
+    "iso": "HUN"
+  },
+  {
+    "divisao": "110",
+    "pais": "Chipre",
+    "nome_pdf": "CYPRUS Isl.",
+    "situacao": "ativa",
+    "iso": "CYP"
+  },
+  {
+    "divisao": "111",
+    "pais": "Jordânia",
+    "nome_pdf": "JORDAN",
+    "situacao": "ativa",
+    "iso": "JOR"
+  },
+  {
+    "divisao": "112",
+    "pais": "Líbano",
+    "nome_pdf": "LEBANON",
+    "situacao": "ativa",
+    "iso": "LBN"
+  },
+  {
+    "divisao": "113",
+    "pais": "West Malaysia",
+    "nome_pdf": "WEST MALAYSIA",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "114",
+    "pais": "Paquistão",
+    "nome_pdf": "PAKISTAN",
+    "situacao": "ativa",
+    "iso": "PAK"
+  },
+  {
+    "divisao": "115",
+    "pais": "Catar",
+    "nome_pdf": "QATAR",
+    "situacao": "ativa",
+    "iso": "QAT"
+  },
+  {
+    "divisao": "116",
+    "pais": "Turquia",
+    "nome_pdf": "TURKEY",
+    "situacao": "ativa",
+    "iso": "TUR"
+  },
+  {
+    "divisao": "117",
+    "pais": "Egito",
+    "nome_pdf": "EGYPT",
+    "situacao": "ativa",
+    "iso": "EGY"
+  },
+  {
+    "divisao": "118",
+    "pais": "Gâmbia",
+    "nome_pdf": "GAMBIA",
+    "situacao": "ativa",
+    "iso": "GMB"
+  },
+  {
+    "divisao": "119",
+    "pais": "Madeira",
+    "nome_pdf": "MADEIRA Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "120",
+    "pais": "Antigua & Barbuda",
+    "nome_pdf": "ANTIGUA & BARBUDA Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "121",
+    "pais": "Bahamas",
+    "nome_pdf": "BAHAMAS Isl.",
+    "situacao": "ativa",
+    "iso": "BHS"
+  },
+  {
+    "divisao": "122",
+    "pais": "Barbados",
+    "nome_pdf": "BARBADOS Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "123",
+    "pais": "Bermuda",
+    "nome_pdf": "BERMUDA Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "124",
+    "pais": "Amsterdam & St Paul",
+    "nome_pdf": "AMSTERDAM & St PAUL Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "125",
+    "pais": "Cayman",
+    "nome_pdf": "CAYMAN Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "126",
+    "pais": "Nicarágua",
+    "nome_pdf": "NICARAGUA",
+    "situacao": "ativa",
+    "iso": "NIC"
+  },
+  {
+    "divisao": "127",
+    "pais": "Usa Virgin",
+    "nome_pdf": "USA VIRGIN Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "128",
+    "pais": "British Virgin",
+    "nome_pdf": "BRITISH VIRGIN Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "129",
+    "pais": "Macquaire",
+    "nome_pdf": "MACQUAIRE Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "130",
+    "pais": "Norfolk",
+    "nome_pdf": "NORFOLK Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "131",
+    "pais": "Guiana",
+    "nome_pdf": "GUYANA",
+    "situacao": "ativa",
+    "iso": "GUY"
+  },
+  {
+    "divisao": "132",
+    "pais": "Marshall",
+    "nome_pdf": "MARSHALL Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "133",
+    "pais": "Marianas",
+    "nome_pdf": "MARIANAS Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "134",
+    "pais": "Belau",
+    "nome_pdf": "BELAU Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "135",
+    "pais": "Ilhas Salomão",
+    "nome_pdf": "SOLOMON Isl.",
+    "situacao": "ativa",
+    "iso": "SLB"
+  },
+  {
+    "divisao": "136",
+    "pais": "Martinique",
+    "nome_pdf": "MARTINIQUE Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "137",
+    "pais": "Isle Of Man",
+    "nome_pdf": "ISLE OF MAN",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "138",
+    "pais": "Vatican City State",
+    "nome_pdf": "VATICAN CITY STATE",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "139",
+    "pais": "Deleted ( Southern Yemen )",
+    "nome_pdf": "DELETED ( SOUTHERN YEMEN )",
+    "situacao": "excluída"
+  },
+  {
+    "divisao": "140",
+    "pais": "Antártida",
+    "nome_pdf": "ANTARCTICA",
+    "situacao": "ativa",
+    "iso": "ATA"
+  },
+  {
+    "divisao": "141",
+    "pais": "St Pierre & Miquelon",
+    "nome_pdf": "St PIERRE & MIQUELON Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "142",
+    "pais": "Lesoto",
+    "nome_pdf": "LESOTHO",
+    "situacao": "ativa",
+    "iso": "LSO"
+  },
+  {
+    "divisao": "143",
+    "pais": "St Lucia",
+    "nome_pdf": "St LUCIA Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "144",
+    "pais": "Easter",
+    "nome_pdf": "EASTER Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "145",
+    "pais": "Galapagos",
+    "nome_pdf": "GALAPAGOS Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "146",
+    "pais": "Argélia",
+    "nome_pdf": "ALGERIA",
+    "situacao": "ativa",
+    "iso": "DZA"
+  },
+  {
+    "divisao": "147",
+    "pais": "Tunísia",
+    "nome_pdf": "TUNISIA",
+    "situacao": "ativa",
+    "iso": "TUN"
+  },
+  {
+    "divisao": "148",
+    "pais": "Ascension",
+    "nome_pdf": "ASCENSION Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "149",
+    "pais": "Laccadive",
+    "nome_pdf": "LACCADIVE Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "150",
+    "pais": "Bahrain",
+    "nome_pdf": "BAHRAIN",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "151",
+    "pais": "Iraque",
+    "nome_pdf": "IRAQ",
+    "situacao": "ativa",
+    "iso": "IRQ"
+  },
+  {
+    "divisao": "152",
+    "pais": "Maldive",
+    "nome_pdf": "MALDIVE Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "153",
+    "pais": "Tailândia",
+    "nome_pdf": "THAILAND",
+    "situacao": "ativa",
+    "iso": "THA"
+  },
+  {
+    "divisao": "154",
+    "pais": "Irão",
+    "nome_pdf": "IRAN",
+    "situacao": "ativa",
+    "iso": "IRN"
+  },
+  {
+    "divisao": "155",
+    "pais": "Taiwan",
+    "nome_pdf": "TAIWAN Isl.",
+    "situacao": "ativa",
+    "iso": "TWN"
+  },
+  {
+    "divisao": "156",
+    "pais": "Camarões",
+    "nome_pdf": "CAMEROON",
+    "situacao": "ativa",
+    "iso": "CMR"
+  },
+  {
+    "divisao": "157",
+    "pais": "Montserrat",
+    "nome_pdf": "MONTSERRAT Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "158",
+    "pais": "Trinidad e Tobago",
+    "nome_pdf": "TRINIDAD & TOBAGO Isl.",
+    "situacao": "ativa",
+    "iso": "TTO"
+  },
+  {
+    "divisao": "159",
+    "pais": "Somália",
+    "nome_pdf": "SOMALIA REPUBLIC",
+    "situacao": "ativa",
+    "iso": "SOM"
+  },
+  {
+    "divisao": "160",
+    "pais": "Sudão",
+    "nome_pdf": "SUDAN",
+    "situacao": "ativa",
+    "iso": "SDN"
+  },
+  {
+    "divisao": "161",
+    "pais": "Polónia",
+    "nome_pdf": "POLAND",
+    "situacao": "ativa",
+    "iso": "POL"
+  },
+  {
+    "divisao": "162",
+    "pais": "República Democrática do Congo",
+    "nome_pdf": "DEMOCRATIC REPUBLIC OF CONGO",
+    "situacao": "ativa",
+    "iso": "COD"
+  },
+  {
+    "divisao": "163",
+    "pais": "Wales",
+    "nome_pdf": "WALES",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "164",
+    "pais": "Togo",
+    "nome_pdf": "TOGO REPUBLIC",
+    "situacao": "ativa",
+    "iso": "TGO"
+  },
+  {
+    "divisao": "165",
+    "pais": "Sardinia",
+    "nome_pdf": "SARDINIA",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "166",
+    "pais": "Deleted ( St Martenn,Saba  & St Eustatuis Isl. )",
+    "nome_pdf": "DELETED ( ST Martenn,Saba  & ST Eustatuis Isl. )",
+    "situacao": "excluída"
+  },
+  {
+    "divisao": "167",
+    "pais": "Jersey",
+    "nome_pdf": "JERSEY Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "168",
+    "pais": "Mauritius",
+    "nome_pdf": "MAURITIUS Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "169",
+    "pais": "Guernsey Island & Depend",
+    "nome_pdf": "GUERNSEY ISLAND & DEPEND Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "170",
+    "pais": "Burkina Faso",
+    "nome_pdf": "BURKINA FASO",
+    "situacao": "ativa",
+    "iso": "BFA"
+  },
+  {
+    "divisao": "171",
+    "pais": "Svalbard",
+    "nome_pdf": "SVALBARD Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "172",
+    "pais": "Nova Caledónia",
+    "nome_pdf": "NEW CALEDONIA Isl.",
+    "situacao": "ativa",
+    "iso": "NCL"
+  },
+  {
+    "divisao": "173",
+    "pais": "Reunion",
+    "nome_pdf": "REUNION Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "174",
+    "pais": "Uganda",
+    "nome_pdf": "UGANDA",
+    "situacao": "ativa",
+    "iso": "UGA"
+  },
+  {
+    "divisao": "175",
+    "pais": "Chade",
+    "nome_pdf": "CHAD REPUBLIC",
+    "situacao": "ativa",
+    "iso": "TCD"
+  },
+  {
+    "divisao": "176",
+    "pais": "República Centro-Africana",
+    "nome_pdf": "CENTRAL AFRICAN REPUBLIC",
+    "situacao": "ativa",
+    "iso": "CAF"
+  },
+  {
+    "divisao": "177",
+    "pais": "Sri Lanka",
+    "nome_pdf": "SRI LANKA",
+    "situacao": "ativa",
+    "iso": "LKA"
+  },
+  {
+    "divisao": "178",
+    "pais": "Bulgária",
+    "nome_pdf": "BULGARIA",
+    "situacao": "ativa",
+    "iso": "BGR"
+  },
+  {
+    "divisao": "179",
+    "pais": "Deleted ( Czechoslovakia )",
+    "nome_pdf": "DELETED ( CZECHOSLOVAKIA )",
+    "situacao": "excluída"
+  },
+  {
+    "divisao": "180",
+    "pais": "Omã",
+    "nome_pdf": "OMAN",
+    "situacao": "ativa",
+    "iso": "OMN"
+  },
+  {
+    "divisao": "181",
+    "pais": "Síria",
+    "nome_pdf": "SYRIA",
+    "situacao": "ativa",
+    "iso": "SYR"
+  },
+  {
+    "divisao": "182",
+    "pais": "Guiné",
+    "nome_pdf": "REPUBLIC OF GUINEA",
+    "situacao": "ativa",
+    "iso": "GIN"
+  },
+  {
+    "divisao": "183",
+    "pais": "Benim",
+    "nome_pdf": "BENIN",
+    "situacao": "ativa",
+    "iso": "BEN"
+  },
+  {
+    "divisao": "184",
+    "pais": "Burundi",
+    "nome_pdf": "BURUNDI",
+    "situacao": "ativa",
+    "iso": "BDI"
+  },
+  {
+    "divisao": "185",
+    "pais": "Comoros",
+    "nome_pdf": "COMOROS Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "186",
+    "pais": "Djibouti",
+    "nome_pdf": "DJIBOUTI",
+    "situacao": "ativa",
+    "iso": "DJI"
+  },
+  {
+    "divisao": "187",
+    "pais": "Quénia",
+    "nome_pdf": "KENYA",
+    "situacao": "ativa",
+    "iso": "KEN"
+  },
+  {
+    "divisao": "188",
+    "pais": "Madagáscar",
+    "nome_pdf": "MALAGASY REPUBLIC Isl.",
+    "situacao": "ativa",
+    "iso": "MDG"
+  },
+  {
+    "divisao": "189",
+    "pais": "Mayotte",
+    "nome_pdf": "MAYOTTE Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "190",
+    "pais": "Seychelles",
+    "nome_pdf": "SEYCHELLES Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "191",
+    "pais": "Essuatíni",
+    "nome_pdf": "SWAZILAND",
+    "situacao": "ativa",
+    "iso": "SWZ"
+  },
+  {
+    "divisao": "192",
+    "pais": "Cocos",
+    "nome_pdf": "COCOS Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "193",
+    "pais": "Cocos & Keeling",
+    "nome_pdf": "COCOS & KEELING Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "194",
+    "pais": "Dominica",
+    "nome_pdf": "DOMINICA Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "195",
+    "pais": "Grenada",
+    "nome_pdf": "GRENADA Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "196",
+    "pais": "Guadeloupe",
+    "nome_pdf": "GUADELOUPE Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "197",
+    "pais": "Vanuatu",
+    "nome_pdf": "VANUATU Isl.",
+    "situacao": "ativa",
+    "iso": "VUT"
+  },
+  {
+    "divisao": "198",
+    "pais": "Falkland",
+    "nome_pdf": "FALKLAND Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "199",
+    "pais": "Guiné Equatorial",
+    "nome_pdf": "EQUATORIAL GUINEA",
+    "situacao": "ativa",
+    "iso": "GNQ"
+  },
+  {
+    "divisao": "200",
+    "pais": "South Shetland",
+    "nome_pdf": "SOUTH SHETLAND Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "201",
+    "pais": "French Polynesia",
+    "nome_pdf": "FRENCH POLYNESIA",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "202",
+    "pais": "Butão",
+    "nome_pdf": "BUTHAN",
+    "situacao": "ativa",
+    "iso": "BTN"
+  },
+  {
+    "divisao": "203",
+    "pais": "China",
+    "nome_pdf": "CHINA",
+    "situacao": "ativa",
+    "iso": "CHN"
+  },
+  {
+    "divisao": "204",
+    "pais": "Moçambique",
+    "nome_pdf": "MOZAMBIQUE",
+    "situacao": "ativa",
+    "iso": "MOZ"
+  },
+  {
+    "divisao": "205",
+    "pais": "Cape Verde",
+    "nome_pdf": "CAPE VERDE Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "206",
+    "pais": "Etiópia",
+    "nome_pdf": "ETHIOPIA",
+    "situacao": "ativa",
+    "iso": "ETH"
+  },
+  {
+    "divisao": "207",
+    "pais": "St Martin",
+    "nome_pdf": "St MARTIN Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "208",
+    "pais": "Glorioso",
+    "nome_pdf": "GLORIOSO Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "209",
+    "pais": "Juan De Nova",
+    "nome_pdf": "JUAN DE NOVA Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "210",
+    "pais": "Wallis & Futuma",
+    "nome_pdf": "WALLIS & FUTUMA  Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "211",
+    "pais": "Jan Mayen",
+    "nome_pdf": "JAN MAYEN Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "212",
+    "pais": "Aland",
+    "nome_pdf": "ALAND Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "213",
+    "pais": "Market Reef",
+    "nome_pdf": "MARKET REEF Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "214",
+    "pais": "República do Congo",
+    "nome_pdf": "CONGO REPUBLIC",
+    "situacao": "ativa",
+    "iso": "COG"
+  },
+  {
+    "divisao": "215",
+    "pais": "Gabão",
+    "nome_pdf": "GABON REPUBLIC",
+    "situacao": "ativa",
+    "iso": "GAB"
+  },
+  {
+    "divisao": "216",
+    "pais": "Mali",
+    "nome_pdf": "MALI REPUBLIC",
+    "situacao": "ativa",
+    "iso": "MLI"
+  },
+  {
+    "divisao": "217",
+    "pais": "Christmas",
+    "nome_pdf": "CHRISTMAS Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "218",
+    "pais": "Belize",
+    "nome_pdf": "BELIZE",
+    "situacao": "ativa",
+    "iso": "BLZ"
+  },
+  {
+    "divisao": "219",
+    "pais": "Anguilla",
+    "nome_pdf": "ANGUILLA Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "220",
+    "pais": "St Vincent Isl. & Dep.",
+    "nome_pdf": "St VINCENT Isl. & DEP.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "221",
+    "pais": "South Orkney",
+    "nome_pdf": "SOUTH ORKNEY  Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "222",
+    "pais": "South Sandwich",
+    "nome_pdf": "SOUTH SANDWICH Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "223",
+    "pais": "Western Samoa",
+    "nome_pdf": "WESTERN SAMOA  Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "224",
+    "pais": "West Kiribati",
+    "nome_pdf": "WEST KIRIBATI  Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "225",
+    "pais": "Brunei",
+    "nome_pdf": "BRUNEI",
+    "situacao": "ativa",
+    "iso": "BRN"
+  },
+  {
+    "divisao": "226",
+    "pais": "Malawi",
+    "nome_pdf": "MALAWI",
+    "situacao": "ativa",
+    "iso": "MWI"
+  },
+  {
+    "divisao": "227",
+    "pais": "Ruanda",
+    "nome_pdf": "RWANDA",
+    "situacao": "ativa",
+    "iso": "RWA"
+  },
+  {
+    "divisao": "228",
+    "pais": "Chagos",
+    "nome_pdf": "CHAGOS Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "229",
+    "pais": "Heard",
+    "nome_pdf": "HEARD Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "230",
+    "pais": "Federated States Of Micronesia",
+    "nome_pdf": "FEDERATED STATES OF MICRONESIA",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "231",
+    "pais": "St Peter & St Paul",
+    "nome_pdf": "ST PETER & ST PAUL Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "232",
+    "pais": "Aruba",
+    "nome_pdf": "ARUBA Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "233",
+    "pais": "Roménia",
+    "nome_pdf": "ROMANIA",
+    "situacao": "ativa",
+    "iso": "ROU"
+  },
+  {
+    "divisao": "234",
+    "pais": "Afeganistão",
+    "nome_pdf": "AFGHANISTAN",
+    "situacao": "ativa",
+    "iso": "AFG"
+  },
+  {
+    "divisao": "235",
+    "pais": "I.T.U. Geneva",
+    "nome_pdf": "I.T.U. GENEVA",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "236",
+    "pais": "Bangladesh",
+    "nome_pdf": "BANGLADESH",
+    "situacao": "ativa",
+    "iso": "BGD"
+  },
+  {
+    "divisao": "237",
+    "pais": "Myanmar",
+    "nome_pdf": "UNION OF MYANMAR",
+    "situacao": "ativa",
+    "iso": "MMR"
+  },
+  {
+    "divisao": "238",
+    "pais": "Camboja",
+    "nome_pdf": "CAMBODIA",
+    "situacao": "ativa",
+    "iso": "KHM"
+  },
+  {
+    "divisao": "239",
+    "pais": "Laos",
+    "nome_pdf": "LAOS",
+    "situacao": "ativa",
+    "iso": "LAO"
+  },
+  {
+    "divisao": "240",
+    "pais": "Macao",
+    "nome_pdf": "MACAO",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "241",
+    "pais": "Spratly",
+    "nome_pdf": "SPRATLY Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "242",
+    "pais": "Vietname",
+    "nome_pdf": "VIETNAM",
+    "situacao": "ativa",
+    "iso": "VNM"
+  },
+  {
+    "divisao": "243",
+    "pais": "Agalega & St Brandon",
+    "nome_pdf": "AGALEGA & St BRANDON Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "244",
+    "pais": "Pagalu & Annobon",
+    "nome_pdf": "PAGALU & ANNOBON Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "245",
+    "pais": "Níger",
+    "nome_pdf": "NIGER",
+    "situacao": "ativa",
+    "iso": "NER"
+  },
+  {
+    "divisao": "246",
+    "pais": "Sao Tome & Principe",
+    "nome_pdf": "SAO TOME & PRINCIPE Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "247",
+    "pais": "Navassa",
+    "nome_pdf": "NAVASSA Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "248",
+    "pais": "Turks & Caicos",
+    "nome_pdf": "TURKS & CAICOS Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "249",
+    "pais": "Northern Cook",
+    "nome_pdf": "NORTHERN COOK Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "250",
+    "pais": "Southern Cook",
+    "nome_pdf": "SOUTHERN COOK Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "251",
+    "pais": "Albânia",
+    "nome_pdf": "ALBANIA",
+    "situacao": "ativa",
+    "iso": "ALB"
+  },
+  {
+    "divisao": "252",
+    "pais": "Revillagigedo",
+    "nome_pdf": "REVILLAGIGEDO Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "253",
+    "pais": "Andaman & Nicobar",
+    "nome_pdf": "ANDAMAN & NICOBAR Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "254",
+    "pais": "Mount Athos",
+    "nome_pdf": "MOUNT ATHOS",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "255",
+    "pais": "Kerguelen",
+    "nome_pdf": "KERGUELEN Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "256",
+    "pais": "Prince Edwards & Marion",
+    "nome_pdf": "PRINCE EDWARDS & MARION Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "257",
+    "pais": "Rodrigues",
+    "nome_pdf": "RODRIGUES Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "258",
+    "pais": "Tristan Da Cunha & Cough",
+    "nome_pdf": "TRISTAN DA CUNHA & COUGH Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "259",
+    "pais": "Tromelin",
+    "nome_pdf": "TROMELIN Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "260",
+    "pais": "Baker & Howland",
+    "nome_pdf": "BAKER & HOWLAND Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "261",
+    "pais": "Chatham",
+    "nome_pdf": "CHATHAM Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "262",
+    "pais": "Johnston",
+    "nome_pdf": "JOHNSTON Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "263",
+    "pais": "Kermadec",
+    "nome_pdf": "KERMADEC Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "264",
+    "pais": "Kingman Reef",
+    "nome_pdf": "KINGMAN REEF  Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "265",
+    "pais": "Central Kiribati",
+    "nome_pdf": "CENTRAL KIRIBATI Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "266",
+    "pais": "East Kiribati",
+    "nome_pdf": "EAST KIRIBATI  Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "267",
+    "pais": "Kure",
+    "nome_pdf": "KURE Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "268",
+    "pais": "Lord Howe",
+    "nome_pdf": "LORD HOWE Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "269",
+    "pais": "Mellish Reef",
+    "nome_pdf": "MELLISH REEF Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "270",
+    "pais": "Minami-Torishima",
+    "nome_pdf": "MINAMI-TORISHIMA  Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "271",
+    "pais": "Republic Of Nauru",
+    "nome_pdf": "REPUBLIC OF NAURU Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "272",
+    "pais": "Niue",
+    "nome_pdf": "NIUE Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "273",
+    "pais": "Palmyra & Jarvis",
+    "nome_pdf": "PALMYRA & JARVIS Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "274",
+    "pais": "Pitcairn",
+    "nome_pdf": "PITCAIRN Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "275",
+    "pais": "Tokelau",
+    "nome_pdf": "TOKELAU Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "276",
+    "pais": "Tuvalu",
+    "nome_pdf": "TUVALU Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "277",
+    "pais": "Sable",
+    "nome_pdf": "SABLE Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "278",
+    "pais": "Wake",
+    "nome_pdf": "WAKE  Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "279",
+    "pais": "Willis",
+    "nome_pdf": "WILLIS Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "280",
+    "pais": "Aves",
+    "nome_pdf": "AVES Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "281",
+    "pais": "Ogasawara",
+    "nome_pdf": "OGASAWARA Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "282",
+    "pais": "Auckland & Campbell",
+    "nome_pdf": "AUCKLAND & CAMPBELL Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "283",
+    "pais": "St Kitts & Nevis",
+    "nome_pdf": "St KITTS & NEVIS Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "284",
+    "pais": "St Paul",
+    "nome_pdf": "St PAUL Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "285",
+    "pais": "Fernando De Noronha",
+    "nome_pdf": "FERNANDO DE NORONHA Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "286",
+    "pais": "Juan Fernandez",
+    "nome_pdf": "JUAN FERNANDEZ Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "287",
+    "pais": "Malpelo",
+    "nome_pdf": "MALPELO Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "288",
+    "pais": "San Felix & San Ambrosio",
+    "nome_pdf": "SAN FELIX & SAN AMBROSIO Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "289",
+    "pais": "South Georgia",
+    "nome_pdf": "SOUTH GEORGIA Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "290",
+    "pais": "Trinidade & Martin Vaz",
+    "nome_pdf": "TRINIDADE & MARTIN VAZ Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "291",
+    "pais": "Dhekelia & Akrotiri",
+    "nome_pdf": "DHEKELIA & AKROTIRI",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "292",
+    "pais": "Deleted ( Abu-Ail & Jabal-At-Tair )",
+    "nome_pdf": "DELETED ( ABU-AIL & JABAL-AT-TAIR )",
+    "situacao": "excluída"
+  },
+  {
+    "divisao": "293",
+    "pais": "Guiné-Bissau",
+    "nome_pdf": "GUINEA BISSAU",
+    "situacao": "ativa",
+    "iso": "GNB"
+  },
+  {
+    "divisao": "294",
+    "pais": "Peter 1St",
+    "nome_pdf": "PETER 1st Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "295",
+    "pais": "Deleted ( Southern Sudan )",
+    "nome_pdf": "DELETED ( SOUTHERN SUDAN )",
+    "situacao": "excluída"
+  },
+  {
+    "divisao": "296",
+    "pais": "Clipperton",
+    "nome_pdf": "CLIPPERTON Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "297",
+    "pais": "Bouvet",
+    "nome_pdf": "BOUVET Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "298",
+    "pais": "Crozet",
+    "nome_pdf": "CROZET Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "299",
+    "pais": "Desecheo",
+    "nome_pdf": "DESECHEO Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "300",
+    "pais": "Sara Ocidental",
+    "nome_pdf": "WESTERN SAHARA",
+    "situacao": "ativa",
+    "iso": "SAH"
+  },
+  {
+    "divisao": "301",
+    "pais": "Arménia",
+    "nome_pdf": "ARMENIA",
+    "situacao": "ativa",
+    "iso": "ARM"
+  },
+  {
+    "divisao": "302",
+    "pais": "Asiatic Russia",
+    "nome_pdf": "ASIATIC RUSSIA",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "303",
+    "pais": "Azerbaijão",
+    "nome_pdf": "AZERBAIJAN",
+    "situacao": "ativa",
+    "iso": "AZE"
+  },
+  {
+    "divisao": "304",
+    "pais": "Estónia",
+    "nome_pdf": "ESTONIA",
+    "situacao": "ativa",
+    "iso": "EST"
+  },
+  {
+    "divisao": "305",
+    "pais": "Franz Josef Land",
+    "nome_pdf": "FRANZ JOSEF LAND",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "306",
+    "pais": "Geórgia",
+    "nome_pdf": "GEORGIA",
+    "situacao": "ativa",
+    "iso": "GEO"
+  },
+  {
+    "divisao": "307",
+    "pais": "Kaliningradsk",
+    "nome_pdf": "KALININGRADSK",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "308",
+    "pais": "Cazaquistão",
+    "nome_pdf": "KAZAKHSTAN",
+    "situacao": "ativa",
+    "iso": "KAZ"
+  },
+  {
+    "divisao": "309",
+    "pais": "Quirguistão",
+    "nome_pdf": "KIRGHIZSTAN",
+    "situacao": "ativa",
+    "iso": "KGZ"
+  },
+  {
+    "divisao": "310",
+    "pais": "Letónia",
+    "nome_pdf": "LATVIA",
+    "situacao": "ativa",
+    "iso": "LVA"
+  },
+  {
+    "divisao": "311",
+    "pais": "Lituânia",
+    "nome_pdf": "LITHUANIA",
+    "situacao": "ativa",
+    "iso": "LTU"
+  },
+  {
+    "divisao": "312",
+    "pais": "Moldávia",
+    "nome_pdf": "MOLDAVIA",
+    "situacao": "ativa",
+    "iso": "MDA"
+  },
+  {
+    "divisao": "313",
+    "pais": "Tajiquistão",
+    "nome_pdf": "TADZHIKISTAN",
+    "situacao": "ativa",
+    "iso": "TJK"
+  },
+  {
+    "divisao": "314",
+    "pais": "Turquemenistão",
+    "nome_pdf": "TURKMENISTAN",
+    "situacao": "ativa",
+    "iso": "TKM"
+  },
+  {
+    "divisao": "315",
+    "pais": "Ucrânia",
+    "nome_pdf": "UKRAINE",
+    "situacao": "ativa",
+    "iso": "UKR"
+  },
+  {
+    "divisao": "316",
+    "pais": "Uzbequistão",
+    "nome_pdf": "UZBEKKISTAN",
+    "situacao": "ativa",
+    "iso": "UZB"
+  },
+  {
+    "divisao": "317",
+    "pais": "Bielorrússia",
+    "nome_pdf": "WHITE RUSSIA",
+    "situacao": "ativa",
+    "iso": "BLR"
+  },
+  {
+    "divisao": "318",
+    "pais": "S.M.O.M. Survey Military Of Malta",
+    "nome_pdf": "S.M.O.M. SURVEY MILITARY OF MALTA",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "319",
+    "pais": "United Nations ( New-York )",
+    "nome_pdf": "UNITED NATIONS ( NEW-YORK )",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "320",
+    "pais": "Banaba",
+    "nome_pdf": "BANABA Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "321",
+    "pais": "Conway Reef",
+    "nome_pdf": "CONWAY REEF Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "322",
+    "pais": "Deleted ( Walvis Bay Isl )",
+    "nome_pdf": "DELETED ( WALVIS BAY Isl )",
+    "situacao": "excluída"
+  },
+  {
+    "divisao": "323",
+    "pais": "Iémen",
+    "nome_pdf": "YEMEN REPUBLIC",
+    "situacao": "ativa",
+    "iso": "YEM"
+  },
+  {
+    "divisao": "324",
+    "pais": "Deleted ( Penguin Isl )",
+    "nome_pdf": "DELETED ( PENGUIN Isl )",
+    "situacao": "excluída"
+  },
+  {
+    "divisao": "325",
+    "pais": "Rotuma",
+    "nome_pdf": "ROTUMA Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "326",
+    "pais": "Malyj Vysotskj",
+    "nome_pdf": "MALYJ VYSOTSKJ Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "327",
+    "pais": "Eslovénia",
+    "nome_pdf": "SLOVENIA",
+    "situacao": "ativa",
+    "iso": "SVN"
+  },
+  {
+    "divisao": "328",
+    "pais": "Croácia",
+    "nome_pdf": "CROATIA",
+    "situacao": "ativa",
+    "iso": "HRV"
+  },
+  {
+    "divisao": "329",
+    "pais": "Chéquia",
+    "nome_pdf": "CZECH REPUBLIC",
+    "situacao": "ativa",
+    "iso": "CZE"
+  },
+  {
+    "divisao": "330",
+    "pais": "Eslováquia",
+    "nome_pdf": "SLOVAK REPUBLIC",
+    "situacao": "ativa",
+    "iso": "SVK"
+  },
+  {
+    "divisao": "331",
+    "pais": "Bósnia e Herzegovina",
+    "nome_pdf": "BOSNIA & HERZEGOVINA",
+    "situacao": "ativa",
+    "iso": "BIH"
+  },
+  {
+    "divisao": "332",
+    "pais": "Macedónia do Norte",
+    "nome_pdf": "MACEDONIA",
+    "situacao": "ativa",
+    "iso": "MKD"
+  },
+  {
+    "divisao": "333",
+    "pais": "Eritreia",
+    "nome_pdf": "ERITREA",
+    "situacao": "ativa",
+    "iso": "ERI"
+  },
+  {
+    "divisao": "334",
+    "pais": "Coreia do Norte",
+    "nome_pdf": "NORTH KOREA",
+    "situacao": "ativa",
+    "iso": "PRK"
+  },
+  {
+    "divisao": "335",
+    "pais": "Scarborough Reef",
+    "nome_pdf": "SCARBOROUGH REEF Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "336",
+    "pais": "Pratas",
+    "nome_pdf": "PRATAS Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "337",
+    "pais": "Austral",
+    "nome_pdf": "AUSTRAL Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "338",
+    "pais": "Marquesas",
+    "nome_pdf": "MARQUESAS Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "339",
+    "pais": "Temotu",
+    "nome_pdf": "TEMOTU Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "340",
+    "pais": "Palestina",
+    "nome_pdf": "PALESTINE",
+    "situacao": "ativa",
+    "iso": "PSX"
+  },
+  {
+    "divisao": "341",
+    "pais": "Timor-Leste",
+    "nome_pdf": "EAST TIMOR Isl.",
+    "situacao": "ativa",
+    "iso": "TLS"
+  },
+  {
+    "divisao": "342",
+    "pais": "Chesterfield",
+    "nome_pdf": "CHESTERFIELD Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "343",
+    "pais": "Ducie",
+    "nome_pdf": "DUCIE  Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "344",
+    "pais": "Montenegro",
+    "nome_pdf": "MONTENEGRO REPUBLIC",
+    "situacao": "ativa",
+    "iso": "MNE"
+  },
+  {
+    "divisao": "345",
+    "pais": "Swains",
+    "nome_pdf": "SWAINS Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "346",
+    "pais": "St Barthelemy Isl. (St Barts )",
+    "nome_pdf": "ST BARTHELEMY Isl. (ST BARTS )",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "347",
+    "pais": "Curacao",
+    "nome_pdf": "CURACAO     Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "348",
+    "pais": "St Maarten",
+    "nome_pdf": "St MAARTEN Isl.",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "349",
+    "pais": "St Eustatius Isl & Saba Isl &",
+    "nome_pdf": "St EUSTATIUS Isl & SABA Isl &",
+    "situacao": "ativa"
+  },
+  {
+    "divisao": "350",
+    "pais": "Bonaire",
+    "nome_pdf": "BONAIRE Isl.",
+    "situacao": "ativa"
+  }
+]
