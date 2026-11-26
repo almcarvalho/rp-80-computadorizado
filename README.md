@@ -11,6 +11,13 @@ Aplicativo Python para ouvir no computador o áudio recebido pela saída de fone
 
 ## Instalação no Windows
 
+Baixe o Phyton:
+
+Eu tô usando 3.11.4
+
+https://www.python.org/downloads/windows/
+
+
 Instale Python 3.10 ou superior, incluindo o gerenciador `pip` e o Tkinter (normalmente incluído no instalador do Windows). Abra o PowerShell na pasta deste projeto e crie o ambiente virtual:
 
 ```powershell
@@ -20,20 +27,19 @@ py -m venv .venv
 Instale as bibliotecas **uma por vez**, executando cada comando abaixo:
 
 ```powershell
-.\.venv\Scripts\python.exe -m pip install "numpy>=1.24,<3"
-.\.venv\Scripts\python.exe -m pip install "scipy>=1.10,<2"
-.\.venv\Scripts\python.exe -m pip install "sounddevice>=0.4.6,<1"
-.\.venv\Scripts\python.exe -m pip install "noisereduce>=3.0,<4"
-.\.venv\Scripts\python.exe -m pip install "vosk>=0.3.45,<1"
+pip install "numpy>=1.24,<3"
+pip install "scipy>=1.10,<2"
+pip install "sounddevice>=0.4.6,<1"
+pip install "noisereduce>=3.0,<4"
+pip install "vosk>=0.3.45,<1"
 ```
 
-Os limites de versão são os mesmos de `requirements.txt`. Os comandos usam o Python do ambiente virtual, sem precisar ativá-lo. Depois, inicie o programa:
+ Depois, inicie o programa:
 
 ```powershell
-.\.venv\Scripts\python.exe app.py
+py app.py
 ```
 
-No Linux ou macOS, crie o ambiente com `python3 -m venv .venv` e execute os mesmos comandos de instalação, substituindo `.\.venv\Scripts\python.exe` por `.venv/bin/python`. Para iniciar, use `.venv/bin/python app.py`. Dependendo da distribuição, pode ser necessário instalar Tk e PortAudio pelos pacotes do sistema.
 
 ## Uso
 
@@ -89,3 +95,5 @@ Escolha **Português**, **Inglês** ou **Espanhol**, marque **Ativar legendas** 
 A transcrição é uma estimativa e pode errar ou deixar de reconhecer palavras, especialmente com chiado, códigos de rádio e conversas simultâneas. O processamento pode atrasar ou perder trechos se o computador não acompanhar; nesse caso uma mensagem será exibida.
 
 O reconhecimento recebe o áudio após a redução de ruído, mas antes do filtro de voz e do volume de saída. A redução só atua quando estiver ativada e houver uma amostra de chiado capturada; caso contrário, o reconhecimento recebe a entrada original. Uma redução excessiva pode prejudicar a fala e a transcrição. Se as legendas não aparecerem, confirme a entrada selecionada e o nível de entrada no Windows, verifique se há voz audível no rádio e teste com uma fala clara. O log recebe frases concluídas, que podem demorar até uma pausa ou até parar o áudio.
+
+As legendas ainda não funcionam bem!
