@@ -5,6 +5,7 @@ import logging
 import os
 import re
 import webbrowser
+from collections import deque
 from pathlib import Path
 from urllib.parse import urlencode
 import tkinter as tk
@@ -20,6 +21,7 @@ from contatos import buscar_contato, buscar_wrl_publico, registrar_busca, atuali
 
 RATE = 44100
 BLOCK = 4096
+MAX_REPLAY_SECONDS = 60
 
 
 class RadioApp:
@@ -55,6 +57,9 @@ class RadioApp:
         self.events = queue.Queue(maxsize=8)
         self.stop_event = threading.Event()
         self.capture_event = threading.Event()
+        self.replay_lock = threading.Lock()
+        self.audio_history = deque(maxlen=(RATE * MAX_REPLAY_SECONDS + BLOCK - 1) // BLOCK)
+        self.pending_replay = None
         self.worker = None
         self.transcriber = None
         self.fullscreen_window = None
@@ -84,6 +89,11 @@ class RadioApp:
         self.start_button.pack(side='left')
         self.stop_button = ttk.Button(buttons, text='Parar', command=self.stop, state='disabled')
         self.stop_button.pack(side='left', padx=8)
+        self.replay_seconds = tk.StringVar(value='5')
+        self.replay_button = ttk.Button(buttons, text='Replay', width=7, command=self.replay, state='disabled')
+        self.replay_button.pack(side='left')
+        ttk.Entry(buttons, width=4, textvariable=self.replay_seconds).pack(side='left', padx=(4, 2))
+        ttk.Label(buttons, text='s').pack(side='left')
         alphabet = ttk.Frame(bottom, style='Panel.TFrame', padding=10)
         alphabet.pack(side='left', fill='x', expand=True)
         ttk.Label(alphabet, text='ALFABETO FONÉTICO', style='Title.TLabel').pack(anchor='w', pady=(0, 6))
@@ -257,9 +267,12 @@ class RadioApp:
             return
         self.stop_event.clear()
         self.capture_event.clear()
+        self.audio_history.clear()
+        self.pending_replay = None
         self.start_button.config(state='disabled')
         self.stop_button.config(state='normal')
         self.capture_button.config(state='normal')
+        self.replay_button.config(state='normal')
         self.input_box.config(state='disabled')
         self.output_box.config(state='disabled')
         self.status.set('Iniciando áudio...')
@@ -506,6 +519,7 @@ class RadioApp:
                 self.events.put((kind, value))
 
     def audio_loop(self, inp, out):
+        replay = np.empty(0, dtype=np.float32)
         noise = None
         collected = []
         remaining = 0
@@ -545,8 +559,19 @@ class RadioApp:
                         samples, zi = signal.sosfilt(sos, samples, zi=zi)
                     was_voice = voice
                     samples = np.clip(samples * gain, -1, 1).astype(np.float32)
-                    underflow = stream.write(samples.reshape(-1, 1))
-                    self.emit('wave', samples[::max(1, len(samples)//400)])
+                    with self.replay_lock:
+                        self.audio_history.append(samples)
+                        if self.pending_replay is not None:
+                            replay = self.pending_replay
+                            self.pending_replay = None
+                    output = samples
+                    if replay.size:
+                        count = min(len(samples), replay.size)
+                        output = samples.copy()
+                        output[:count] = replay[:count]
+                        replay = replay[count:]
+                    underflow = stream.write(output.reshape(-1, 1))
+                    self.emit('wave', output[::max(1, len(output)//400)])
                     if overflow or underflow:
                         self.emit('status', 'Áudio ativo; houve falha de tempo. Feche outros programas ou reduza a carga do computador.')
         except Exception as exc:
@@ -557,12 +582,32 @@ class RadioApp:
     def capture(self):
         self.capture_event.set()
 
+    def replay(self):
+        try:
+            seconds = int(self.replay_seconds.get())
+        except ValueError:
+            seconds = 0
+        if not 1 <= seconds <= MAX_REPLAY_SECONDS:
+            self.status.set(f'Informe de 1 a {MAX_REPLAY_SECONDS} segundos para o replay.')
+            return
+        count = seconds * RATE
+        blocks = (count + BLOCK - 1) // BLOCK
+        with self.replay_lock:
+            history = tuple(self.audio_history)
+        if not history:
+            self.status.set('Aguarde a chegada de áudio para usar o replay.')
+            return
+        recording = np.concatenate(history[-blocks:])[-count:]
+        with self.replay_lock:
+            self.pending_replay = recording
+
     def stop(self):
         self.stop_event.set()
         self.stop_transcription()
         if self.subtitles_enabled.get():
             self.subtitle.set('Áudio parado. Legendas serão retomadas ao iniciar.')
         self.stop_button.config(state='disabled')
+        self.replay_button.config(state='disabled')
         self.status.set('Parando áudio...')
 
     def poll(self):
@@ -641,6 +686,7 @@ class RadioApp:
                     self.start_button.config(state='normal')
                     self.stop_button.config(state='disabled')
                     self.capture_button.config(state='disabled')
+                    self.replay_button.config(state='disabled')
                     self.input_box.config(state='readonly')
                     self.output_box.config(state='readonly')
                     if self.status.get() != 'Erro no áudio.':
