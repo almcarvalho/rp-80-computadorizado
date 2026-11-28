@@ -197,7 +197,7 @@ def atualizar_nome_contato(indice, linha_original, nome):
 def registrar_busca(prefixo, contato, fonte='HamDB'):
     registro = contato if contato is not None else {
         'prefixo': prefixo.strip().upper(),
-        'nome': 'Não encontrado',
+        'nome': '' if fonte == 'Google' else 'Não encontrado',
         'horario': datetime.now().isoformat(timespec='seconds'),
         'regiao': '—', 'pais': '—', 'fonte': fonte,
     }

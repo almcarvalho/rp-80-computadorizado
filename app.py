@@ -395,9 +395,14 @@ class RadioApp:
         try:
             if not webbrowser.open(url):
                 raise OSError('Não foi possível abrir o navegador padrão.')
-            self.status.set('Pesquisa aberta no Google. O resumo de IA depende da disponibilidade do Google.')
         except Exception as exc:
             messagebox.showerror('Busca no Google', str(exc))
+            return
+        self.status.set('Pesquisa aberta no Google. O resumo de IA depende da disponibilidade do Google.')
+        try:
+            registrar_busca(query, None, 'Google')
+        except OSError as exc:
+            messagebox.showwarning('Log de buscas', f'Não foi possível salvar a busca no log: {exc}')
 
     def search_google_from_key(self, _event):
         query = self.callsign.get()

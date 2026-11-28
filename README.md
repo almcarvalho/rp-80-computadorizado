@@ -62,7 +62,7 @@ Para adicionar ou corrigir um nome no histórico, abra **Log**, selecione a linh
 
 Ao pesquisar novamente um indicativo, o programa mostra imediatamente o nome conhecido mais recente no histórico, seja ele editado manualmente ou encontrado em uma base. Nas buscas pelos botões WRL ou HamDB, a consulta escolhida continua normalmente; nomes ausentes ou marcados como não encontrados são ignorados.
 
-O botão **Google** abre no navegador uma pesquisa usando exatamente o texto digitado na caixa, sem acrescentar termos. O resumo de IA, quando disponível, é exibido pelo próprio Google na página de resultados; sua exibição não é garantida e ele não é importado para o aplicativo nem para o log de buscas. A busca envia o texto ao Google e está sujeita às configurações da conta e da região.
+O botão **Google** abre no navegador uma pesquisa usando exatamente o texto digitado na caixa, sem acrescentar termos. Quando o navegador é aberto, o **Log** registra a consulta, o horário e a fonte **Google**, com o nome em branco para edição manual. O resumo de IA, quando disponível, é exibido na página de resultados do Google. A busca envia o texto ao Google e está sujeita às configurações da conta e da região.
 
 Ao executar o aplicativo pelo terminal, as consultas à API HamDB mostram a chamada, o estado HTTP e a resposta JSON ou o erro. As respostas podem conter informações públicas do contato. A busca do botão Google abre o navegador e não retorna uma resposta de API ao programa.
 
